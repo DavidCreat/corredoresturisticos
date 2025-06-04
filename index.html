@@ -251,33 +251,33 @@
     <script src="js/colombia_map.js"></script>
     <script src="js/main.js"></script>
     
-    <!-- Script para el video de YouTube como fondo -->
-    <script>
+ <script>
         // Cargar la API de YouTube IFrame
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        
-        // Variable para el reproductor de YouTube
+
+        // Variable para el reproductor
         var player;
-        
+
         // Función llamada automáticamente por la API de YouTube cuando está lista
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                videoId: 'gU5AYz8x0YU', // ID del video de YouTube
+                videoId: 'gU5AYz8x0YU',
                 playerVars: {
-                    autoplay: 1,        // Reproducción automática
-                    controls: 0,        // Sin controles
-                    showinfo: 0,        // Sin información del video
-                    modestbranding: 1,  // Branding mínimo
-                    loop: 1,            // Reproducción en bucle
-                    playlist: 'gU5AYz8x0YU', // Necesario para el bucle
-                    fs: 0,              // Sin botón de pantalla completa
-                    cc_load_policy: 0,  // Sin subtítulos
-                    iv_load_policy: 3,  // Sin anotaciones
-                    autohide: 0,        // Interfaz siempre visible
-                    mute: 1             // Video silenciado (necesario para autoplay)
+                    autoplay: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                    loop: 1,
+                    playlist: 'gU5AYz8x0YU',
+                    fs: 0,
+                    cc_load_policy: 0,
+                    iv_load_policy: 3,
+                    autohide: 0,
+                    mute: 1,
+                    start: 1
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -285,34 +285,33 @@
                 }
             });
         }
-        
-        // Función llamada cuando el reproductor está listo
+
+        // Función cuando el reproductor está listo
         function onPlayerReady(event) {
             event.target.playVideo();
-            // Ajustar el tamaño del reproductor para cubrir toda la sección
             resizePlayer();
-            // Ajustar el tamaño cuando cambie el tamaño de la ventana
             window.addEventListener('resize', resizePlayer);
         }
-        
-        // Función para ajustar el tamaño del reproductor
+
+        // Ajustar tamaño del reproductor
         function resizePlayer() {
             var hero = document.querySelector('.hero');
             var playerElement = document.querySelector('#youtube-player');
             if (playerElement) {
                 playerElement.style.width = hero.offsetWidth + 'px';
-                playerElement.style.height = hero.offsetHeight + 200 + 'px'; // Un poco más alto para cubrir bien
+                playerElement.style.height = hero.offsetHeight + 200 + 'px';
                 playerElement.style.position = 'absolute';
                 playerElement.style.top = '50%';
                 playerElement.style.left = '50%';
                 playerElement.style.transform = 'translate(-50%, -50%)';
+                playerElement.style.pointerEvents = 'none'; // No clickeable
             }
         }
-        
-        // Función llamada cuando cambia el estado del reproductor
+
+        // Reiniciar el video si termina (por seguridad)
         function onPlayerStateChange(event) {
-            // Si el video termina, reiniciarlo
             if (event.data === YT.PlayerState.ENDED) {
+                player.seekTo(1);
                 player.playVideo();
             }
         }
