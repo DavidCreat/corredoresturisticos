@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor Antioquia-Chocó - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/antioquia_choco/antioquia\ y\ choco\ 2.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico Antioquia-Chocó</h2>
+                    <p>Descubre la diversidad cultural, natural y gastronómica de dos departamentos únicos de Colombia</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor Antioquia-Chocó</h2>
+                <p>El Corredor Turístico Antioquia-Chocó conecta dos de los departamentos más diversos y ricos culturalmente de Colombia. Antioquia, conocida por su pujanza empresarial, tradiciones paisas y diversidad geográfica que va desde las montañas andinas hasta las costas del Caribe y el Pacífico. Chocó, por su parte, es un departamento de extraordinaria riqueza natural y cultural, hogar de comunidades afrodescendientes e indígenas que han preservado sus tradiciones ancestrales.</p>
+                <p>Antioquia abarca desde su menor extensión en Sabaneta (15 km²) hasta la vasta extensión de Sonsón (1,323 km²), ofreciendo experiencias que van desde la modernidad de Medellín hasta los pueblos coloniales como Jardín y Santa Fe de Antioquia. Sus balcones pintorescos, la Cueva del Esplendor, puentes colgantes históricos y la rica tradición cerámica de El Carmen de Viboral crean un mosaico cultural único.</p>
+                <p>Chocó, con sus 30 municipios que van desde la extensa Riosucio (7,046 km²) hasta la compacta Unión Panamericana (147 km²), es una tierra de contrastes donde la selva tropical se encuentra con el océano Pacífico. Sus parques nacionales, manglares, festivales tradicionales y la riqueza musical del Pacífico colombiano ofrecen experiencias auténticas e inolvidables para los visitantes.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-antioquia-choco" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var map = L.map('map-antioquia-choco').setView([6.5, -76.0], 7);
+                        
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Marcadores Antioquia
+                        var medellin = L.marker([6.2442, -75.5812]).addTo(map)
+                            .bindPopup('<b>Medellín</b><br>Capital de Antioquia, ciudad de la eterna primavera.');
+                        
+                        var jardin = L.marker([5.5981, -75.8227]).addTo(map)
+                            .bindPopup('<b>Jardín</b><br>Pueblo de balcones pintorescos y la Cueva del Esplendor.');
+                        
+                        var santaFe = L.marker([6.5569, -75.8267]).addTo(map)
+                            .bindPopup('<b>Santa Fe de Antioquia</b><br>Patrimonio colonial con el puente colgante de Occidente.');
+                        
+                        var jerico = L.marker([5.7917, -75.7833]).addTo(map)
+                            .bindPopup('<b>Jericó</b><br>"La Atenas del Suroeste" por su rica cultura literaria.');
+                        
+                        var guatape = L.marker([6.2317, -75.1581]).addTo(map)
+                            .bindPopup('<b>Guatapé</b><br>Pueblo de zócalos coloridos y la Piedra del Peñol.');
+                        
+                        // Marcadores Chocó
+                        var quibdo = L.marker([5.6947, -76.6583]).addTo(map)
+                            .bindPopup('<b>Quibdó</b><br>Capital del Chocó, centro de la cultura afrocolombiana.');
+                        
+                        var bahiaSolano = L.marker([6.2292, -77.3967]).addTo(map)
+                            .bindPopup('<b>Bahía Solano</b><br>Destino de avistamiento de ballenas y ecoturismo.');
+                        
+                        var nuqui = L.marker([5.7056, -77.2708]).addTo(map)
+                            .bindPopup('<b>Nuquí</b><br>Playas vírgenes del Pacífico y aguas termales.');
+                        
+                        var capurgana = L.marker([8.6333, -77.35]).addTo(map)
+                            .bindPopup('<b>Capurganá</b><br>Paraíso caribeño en la frontera con Panamá.');
+                        
+                        // Polígono aproximado del corredor
+                        var corridorArea = L.polygon([
+                            [8.8, -77.5],  // Norte Chocó Caribe
+                            [8.5, -74.5],  // Noreste Antioquia
+                            [4.5, -74.0],  // Sur Antioquia
+                            [4.0, -78.0],  // Sur Chocó Pacífico
+                            [6.5, -78.5],  // Oeste Chocó Pacífico
+                            [8.0, -78.0]   // Noroeste Chocó
+                        ], {
+                            color: '#2196f3',
+                            fillColor: '#2196f3',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Antioquia Colonial</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta los pueblos coloniales más importantes de Antioquia, preservando la arquitectura y tradiciones paisas auténticas.</p>
+                            <ul>
+                                <li>Incluye Jardín, Santa Fe de Antioquia, Jericó y Concepción.</li>
+                                <li>Concentra la mayor cantidad de balcones pintorescos y arquitectura colonial del departamento.</li>
+                                <li><strong>Atracciones principales:</strong> Cueva del Esplendor, Puente de Occidente, Plaza Principal de Jardín, Casas coloniales de los siglos XVI-XVIII.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Oriente Antioqueño</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Conecta Medellín con los destinos turísticos del oriente antioqueño, especializado en turismo de naturaleza y aventura.</p>
+                            <ul>
+                                <li>Abarca Medellín, Guatapé, El Peñol, Marinilla y El Carmen de Viboral.</li>
+                                <li>Reconocido por sus paisajes de montaña, embalses y tradiciones artesanales.</li>
+                                <li><strong>Atracciones principales:</strong> Piedra del Peñol, Zócalos de Guatapé, Cerámica del Carmen de Viboral, Parque Arví.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Chocó Pacífico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta costera que conecta los principales destinos del Pacífico chocoano, especializada en ecoturismo y avistamiento de fauna marina.</p>
+                            <ul>
+                                <li>Incluye Bahía Solano, Nuquí, El Valle, Jurubidá y Pizarro.</li>
+                                <li>Ideal para avistamiento de ballenas jorobadas y turismo de naturaleza.</li>
+                                <li><strong>Atracciones principales:</strong> Parque Nacional Natural Ensenada de Utría, Playas vírgenes, Aguas termales, Manglares.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Chocó Caribe</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Conecta los destinos caribeños del Chocó con acceso desde el Golfo de Urabá, integrando playas paradisíacas y cultura afrocaribe.</p>
+                            <ul>
+                                <li>Abarca Capurganá, Sapzurro, Acandí y Triganá.</li>
+                                <li>Importante para el turismo de playa y la conectividad con Panamá.</li>
+                                <li><strong>Atracciones principales:</strong> Playas de Capurganá, Frontera con Panamá, Snorkeling en arrecifes coralinos, Sendero La Miel.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Cultural Afrocolombiano</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta especializada en la cultura afrodescendiente que conecta Quibdó con las principales comunidades negras del Chocó.</p>
+                            <ul>
+                                <li>Incluye Quibdó, Istmina, Condoto, Bojayá y Riosucio.</li>
+                                <li>Concentra las manifestaciones culturales afrocolombianas más auténticas del país.</li>
+                                <li><strong>Atracciones principales:</strong> Festival de San Francisco de Asís, Música del Pacífico, Danzas tradicionales, Gastronomía afrocolombiana.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Parques Nacionales</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta los principales parques nacionales naturales compartidos entre Antioquia y Chocó.</p>
+                            <ul>
+                                <li>Incluye Parque Nacional Natural Los Katíos, Parque Nacional Natural Paramillo.</li>
+                                <li>Concentra la mayor biodiversidad de la región con ecosistemas únicos.</li>
+                                <li><strong>Atracciones principales:</strong> Selvas tropicales, Humedales, Fauna endémica, Senderos ecológicos, Observación de aves.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Tesoros de Antioquia y Chocó</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🏔️</div>
+                        <div class="route-details">
+                            <h4>Ruta Cultural y Natural Antioquia-Chocó</h4>
+                            <p>12 días explorando la diversidad cultural, natural y gastronómica de ambos departamentos</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Días 1-2: Medellín - Capital de la Montaña</h4>
+                                <p>Llegada a Medellín, city tour por el centro, Comuna 13, Parque Explora y Jardín Botánico. Ascenso al Cerro Nutibara y visita al Pueblito Paisa. Experiencia gastronómica con bandeja paisa auténtica y exploración de la vida nocturna paisa.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Guatapé y La Piedra del Peñol</h4>
+                                <p>Excursión a Guatapé para admirar los coloridos zócalos del pueblo. Ascenso a la Piedra del Peñol (702 escalones) para disfrutar vistas panorámicas del embalse. Paseo en lancha por la represa y almuerzo típico antioqueño.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Jardín - Balcones y Naturaleza</h4>
+                                <p>Traslado a Jardín, recorrido por sus balcones pintorescos y fachadas coloridas. Caminata hasta la Cueva del Esplendor para disfrutar de la cascada interior. Tarde libre en la plaza principal con música tradicional paisa.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Santa Fe de Antioquia</h4>
+                                <p>Visita a Santa Fe de Antioquia, recorrido por el centro histórico y sus casas coloniales. Cruce del famoso Puente de Occidente, uno de los puentes colgantes más largos del mundo. Degustación de dulces típicos y artesanías locales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Días 6-7: Quibdó - Corazón Cultural del Chocó</h4>
+                                <p>Traslado a Quibdó, capital del Chocó. Inmersión en la cultura afrocolombiana con visitas a barrios tradicionales y centros culturales. Experiencia gastronómica con arroz clavado y pescados del Pacífico. Segundo día dedicado a festivales locales y música tradicional del Pacífico.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Días 8-9: Bahía Solano - Avistamiento de Ballenas</h4>
+                                <p>Traslado a Bahía Solano para experiencias de ecoturismo. Excursión de avistamiento de ballenas jorobadas en el Pacífico (temporada julio-noviembre). Visita al Parque Nacional Natural Ensenada de Utría y caminatas por senderos naturales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Días 10-11: Nuquí - Playas Vírgenes</h4>
+                                <p>Traslado a Nuquí para disfrutar de playas vírgenes del Pacífico. Relajación en aguas termales naturales y exploración de manglares. Segundo día dedicado al surf, pesca artesanal y degustación de mariscos frescos con preparación tradicional chocoana.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 12: Capurganá - Paraíso Caribeño</h4>
+                                <p>Excursión a Capurganá en el Caribe chocoano. Disfrute de playas paradisíacas y aguas cristalinas. Caminata hasta la frontera con Panamá por el sendero La Miel. Snorkeling en arrecifes coralinos y tarde de descanso antes del regreso.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Transporte terrestre y aéreo entre destinos (incluye vuelos internos)</li>
+                                <li>Alojamiento en hoteles coloniales, ecolodges y posadas tradicionales</li>
+                                <li>Guías especializados en cultura afrocolombiana y paisa</li>
+                                <li>Entradas a parques nacionales y atracciones principales</li>
+                                <li>Experiencias gastronómicas regionales auténticas</li>
+                                <li>Actividades de ecoturismo y avistamiento de fauna marina</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/antioquia_choco/antioquia y choco 1.webp" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/antioquia_choco/antioquia y choco 2.webp" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/antioquia_choco/antioquia y choco 3.jpg" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/antioquia_choco/antioquia y choco 4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/antioquia_choco/antioquia y choco 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor del Pacífico - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Pacifica/pacifico 5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico del Pacífico</h2>
+                    <p>Descubre los ritmos, sabores y saberes ancestrales de la costa pacífica colombiana</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor del Pacífico</h2>
+                <p>El Corredor del Pacífico colombiano se extiende a lo largo de la costa occidental del país, abarcando los departamentos de Chocó, Valle del Cauca, Cauca y Nariño. Esta región es reconocida mundialmente por su extraordinaria biodiversidad, siendo una de las zonas más húmedas del planeta y hogar de ecosistemas únicos como manglares, selvas tropicales y arrecifes de coral.</p>
+                <p>La riqueza cultural del Pacífico colombiano es igualmente impresionante, con una fuerte presencia de comunidades afrocolombianas e indígenas que han preservado tradiciones ancestrales, expresiones musicales únicas como la marimba y el currulao, y una gastronomía exquisita basada en productos del mar, coco y hierbas locales.</p>
+                <p>Este corredor ofrece experiencias auténticas para viajeros interesados en la cultura afro, el ecoturismo, la música tradicional y la gastronomía local, todo enmarcado en paisajes de una belleza natural incomparable.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-pacifico" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor del Pacífico
+                        var map = L.map('map-pacifico').setView([4.0, -77.5], 7);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor del Pacífico
+                        var buenaventura = L.marker([3.8833, -77.0333]).addTo(map)
+                            .bindPopup('<b>Buenaventura</b><br>Principal puerto del Pacífico colombiano y centro cultural.');
+                        
+                        var quibdo = L.marker([5.6922, -76.6581]).addTo(map)
+                            .bindPopup('<b>Quibdó</b><br>Capital del Chocó, sede de la Fiesta de San Pacho.');
+                        
+                        var bahiaSolano = L.marker([6.2219, -77.4079]).addTo(map)
+                            .bindPopup('<b>Bahía Solano</b><br>Destino ideal para el avistamiento de ballenas jorobadas.');
+                        
+                        var nuqui = L.marker([5.7119, -77.2711]).addTo(map)
+                            .bindPopup('<b>Nuquí</b><br>Paraíso natural con playas vírgenes y aguas termales.');
+                        
+                        var guapi = L.marker([2.5667, -77.8833]).addTo(map)
+                            .bindPopup('<b>Guapi</b><br>Cuna de la marimba y tradiciones ancestrales.');
+                        
+                        var tumaco = L.marker([1.8092, -78.7641]).addTo(map)
+                            .bindPopup('<b>Tumaco</b><br>Centro de la cultura de marimba y gastronomía afro.');
+                        
+                        var gorgona = L.marker([2.9667, -78.1833]).addTo(map)
+                            .bindPopup('<b>Parque Nacional Natural Gorgona</b><br>Isla con gran biodiversidad marina y terrestre.');
+                        
+                        var utria = L.marker([6.0333, -77.3500]).addTo(map)
+                            .bindPopup('<b>Parque Nacional Natural Utría</b><br>Famoso por sus manglares y biodiversidad marina.');
+                        
+                        // Delimitar aproximadamente el Corredor del Pacífico con un polígono
+                        var corridorPacifico = L.polygon([
+                            [8.0, -77.0],  // Chocó norte
+                            [7.0, -76.0],  // Interior Chocó
+                            [1.0, -76.0],  // Sur interior
+                            [0.5, -79.0],  // Frontera con Ecuador
+                            [1.5, -79.5],  // Costa sur
+                            [8.0, -78.0]   // Costa norte
+                        ], {
+                            color: '#1e81b0',
+                            fillColor: '#1e81b0',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Patrimonio Cultural y Natural</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonios Culturales Materiales</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <ul>
+                                <li><strong>Parques Nacionales Naturales del Pacífico:</strong> Varios parques han sido declarados como Patrimonio de la Humanidad debido a su biodiversidad única y su valor ecológico.
+                                    <ul>
+                                        <li>Parque Nacional Natural Utría (Cauca)</li>
+                                        <li>Parque Nacional Natural Gorgona (Cauca)</li>
+                                        <li>Parque Nacional Natural Tatamá (Chocó, Risaralda, Valle del Cauca)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Arquitectura tradicional afrocolombiana:</strong> Viviendas tradicionales de palma y madera que se integran armónicamente al entorno natural.</li>
+                                <li><strong>Museo del Oro de Bogotá:</strong> Aunque no está en la región pacífica, alberga una vasta colección de arte prehispánico que incluye objetos de oro y otros metales de las culturas indígenas de la región pacífica.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonios Culturales Inmateriales</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <ul>
+                                <li><strong>Música del Pacífico colombiano:</strong> La música tradicional del Pacífico, especialmente el uso de la marimba de chonta y ritmos como el currulao, bunde y arrullo, ha sido reconocida como Patrimonio Cultural Inmaterial de la Humanidad (UNESCO, 2010).</li>
+                                <li><strong>Baile y danza de la región:</strong> Las danzas como el currulao, el bunde, el chirimía y el porro son prácticas culturales fundamentales, vinculadas con el ritmo de la marimba y la espiritualidad afrocolombiana.</li>
+                                <li><strong>Fiesta de San Pacho en Quibdó (Chocó):</strong> Una de las fiestas más representativas del Pacífico colombiano, manifestación de la religiosidad, música, danza y tradiciones afrocolombianas.</li>
+                                <li><strong>Ritual del arrullo y alabao:</strong> Prácticas de canto y música realizadas principalmente en comunidades rurales del Pacífico. El arrullo es una expresión musical de cuna, mientras que el alabao es un canto espiritual ligado a la tradición religiosa afrocolombiana.</li>
+                                <li><strong>Medicina tradicional afrocolombiana:</strong> Conjunto de saberes ancestrales que utilizan plantas medicinales y rituales como parte del cuidado de la salud.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonio Natural</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <ul>
+                                <li><strong>Parques Nacionales Naturales del Pacífico:</strong>
+                                    <ul>
+                                        <li><strong>Parque Nacional Natural Utría:</strong> Famoso por sus manglares, bosques tropicales húmedos y biodiversidad marina.</li>
+                                        <li><strong>Parque Nacional Natural Gorgona:</strong> Isla que fue utilizada como prisión en el pasado, ahora un santuario para especies de flora y fauna.</li>
+                                        <li><strong>Parque Nacional Natural Tatamá:</strong> Caracterizado por su ecosistema montañoso, donde convergen diferentes zonas ecológicas.</li>
+                                        <li><strong>Parque Nacional Natural Farallones de Cali:</strong> Se extiende desde la costa del Pacífico hasta la cordillera occidental de los Andes.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Reserva de la Biósfera del Pacífico colombiano:</strong> Incluye zonas costeras, manglares, selvas tropicales, ríos y sistemas de islas.</li>
+                                <li><strong>Manglares del Pacífico colombiano:</strong> Ecosistema crucial para la región, proporcionando hábitats a diversas especies marinas y aves migratorias.</li>
+                                <li><strong>Islas Malpelo:</strong> Archipiélago volcánico conocido por sus ricos ecosistemas marinos, especialmente por la presencia de tiburones, rayas y una diversidad impresionante de vida marina.</li>
+                                <li><strong>El Darién:</strong> Vasta región que se extiende a lo largo de la frontera entre Colombia y Panamá, con bosques tropicales y una biodiversidad única.</li>
+                                <li><strong>Río Atrato:</strong> Uno de los ríos más biodiversos del planeta, vital para la fauna acuática y las comunidades afrodescendientes e indígenas que habitan sus riberas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Ritmos, Sabores y Saberes del Pacífico</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🌊</div>
+                        <div class="route-details">
+                            <h4>Ruta Cultural del Pacífico Colombiano</h4>
+                            <p>8 días de inmersión en la cultura afro y la naturaleza del Pacífico</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1: Llegada a Buenaventura – Sabores que hablan</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Llegada a Cali y traslado a Buenaventura (3 horas por tierra).</li>
+                                    <li>Tour gastronómico en el malecón Bahía de la Cruz: encocado de camarón, arroz con longaniza, arrechón.</li>
+                                    <li>Música en vivo de marimba por la noche.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Hotel local en Buenaventura.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 2: Visita a comunidades afro en Isla Cascajal</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Navegación en lancha hasta Isla Cascajal.</li>
+                                    <li>Taller de cocina tradicional con mujeres cocineras.</li>
+                                    <li>Círculo de historias orales afro y danzas tradicionales.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Buenaventura.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Vuelo a Guapi (Cauca) – Tierra de marimba</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Vuelo desde Cali a Guapi (o conexión desde Buenaventura según disponibilidad).</li>
+                                    <li>Bienvenida con cantos tradicionales y recorrido por la comunidad.</li>
+                                    <li>Visita a taller de construcción de marimbas.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Alojamiento comunitario o ecolodge.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Espiritualidad y música viva en Guapi</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Caminata ecológica por manglares con interpretación cultural.</li>
+                                    <li>Participación en ritual de arrullo o alabao.</li>
+                                    <li>Muestra de danzas tradicionales (currulao, bunde).</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Guapi.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Tumaco – Ritmo afro y resistencia</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Vuelo o traslado a Tumaco.</li>
+                                    <li>Recorrido urbano por murales y barrios culturales.</li>
+                                    <li>Muestra de gastronomía local: piangua, tumbacatre, empanadas de jaiba.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Tumaco.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 6: Playa y saberes ancestrales</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Día en la Playa El Morro con guía local.</li>
+                                    <li>Conversatorio sobre medicina tradicional y espiritualidad afro.</li>
+                                    <li>Taller de danza o percusión.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Tumaco.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 7: Vuelo a Quibdó – Fiesta y espiritualidad en el Chocó</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Vuelo a Quibdó vía Cali.</li>
+                                    <li>Visita al Malecón del río Atrato.</li>
+                                    <li>Noche cultural con música chirimía y muestra de comparsas de San Pacho.</li>
+                                </ul>
+                                <p><strong>Alojamiento:</strong> Quibdó.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 8: Chocó profundo y despedida</h4>
+                                <p><strong>Actividades:</strong></p>
+                                <ul>
+                                    <li>Visita a comunidad local: ritual de despedida afro.</li>
+                                    <li>Taller de tambores o elaboración de artesanía.</li>
+                                    <li>Traslado al aeropuerto para regreso.</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Tips de viaje</h4>
+                            <ul>
+                                <li>Vuelos regionales: Revisa opciones con Satena o EasyFly.</li>
+                                <li>Guías comunitarios: Apoya el turismo local, la experiencia es más enriquecedora.</li>
+                                <li>Lluvias: Lleva ropa impermeable; el clima es tropical húmedo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifico 1.jpg" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifica 2.png" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifico 3.webp" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifico 4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifico 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Pacifica/pacifico 6.jpg" alt="Catedral de Sal de Zipaquirá">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html>

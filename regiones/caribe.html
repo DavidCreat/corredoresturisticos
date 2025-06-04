@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Región Caribe - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .region-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Caribe/caribe 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .attraction-image {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .attraction-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .attraction-card:hover .attraction-image img {
+            transform: scale(1.05);
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        /* Espaciado entre secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .region-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .attractions {
+            padding: 3rem 0;
+        }
+        
+        .region-gallery {
+            margin-bottom: 4rem; /* Espacio adicional antes del footer */
+            padding: 3rem 0;
+            background-color: #f9f9f9;
+        }
+        
+        .gallery-item {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            height: 250px;
+            position: relative;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="../corredores/andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="../corredores/sur.html">Corredor del Sur</a>
+                            <a href="../corredores/pacifico.html">Corredor del Pacífico</a>
+                            <a href="../corredores/andino.html">Corredor Andino</a>
+                            <a href="../corredores/caribe.html">Corredor del Caribe</a>
+                            <a href="../corredores/sea_flower.html">Corredor Sea Flower</a>
+                            <a href="../corredores/antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="../corredores/corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="region-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Región Caribe</h2>
+                    <p>Sumérgete en la alegría de las playas paradisíacas, la música contagiosa y la rica gastronomía costera.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="region-info">
+            <div class="container">
+                <div class="region-description">
+                    <h2 class="section-title">Sobre la Región Caribe</h2>
+                    <p>La Región Caribe colombiana se extiende a lo largo de la costa norte del país, bañada por las aguas del Mar Caribe. Esta región es conocida por sus hermosas playas, su clima cálido, su música alegre como la cumbia y el vallenato, y la calidez de su gente.</p>
+                    <p>Con una rica herencia cultural que mezcla influencias indígenas, africanas y españolas, el Caribe colombiano ofrece una experiencia única en términos de gastronomía, tradiciones y festividades. El Carnaval de Barranquilla, declarado Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO, es una de las celebraciones más importantes de la región.</p>
+                    <p>La región comprende los departamentos de Atlántico, Bolívar, Cesar, Córdoba, La Guajira, Magdalena, Sucre y el archipiélago de San Andrés y Providencia, cada uno con sus propios atractivos y particularidades.</p>
+                </div>
+                
+                <div class="region-map">
+                    <h3>Ubicación</h3>
+                    <div id="map-caribe" style="width: 100%; height: 400px; border-radius: var(--border-radius);"></div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Inicializar el mapa centrado en la región Caribe de Colombia
+                            var map = L.map('map-caribe').setView([10.4, -75.5], 7);
+                            
+                            // Añadir capa de mapa base de OpenStreetMap
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            }).addTo(map);
+                            
+                            // Añadir marcadores para los principales destinos de la región Caribe
+                            var cartagena = L.marker([10.3932, -75.4832]).addTo(map)
+                                .bindPopup('<b>Cartagena</b><br>Ciudad amurallada, Patrimonio de la Humanidad.');
+                            
+                            var santaMarta = L.marker([11.2404, -74.2110]).addTo(map)
+                                .bindPopup('<b>Santa Marta</b><br>La perla del Caribe y puerta al Parque Tayrona.');
+                            
+                            var barranquilla = L.marker([10.9685, -74.7813]).addTo(map)
+                                .bindPopup('<b>Barranquilla</b><br>Sede del Carnaval, Patrimonio Cultural Inmaterial.');
+                            
+                            var sanAndres = L.marker([12.5567, -81.7186]).addTo(map)
+                                .bindPopup('<b>San Andrés</b><br>Isla paradisíaca con el mar de siete colores.');
+                            
+                            // Delimitar aproximadamente la región Caribe con un polígono
+                            var regionCaribe = L.polygon([
+                                [11.5, -77.0], // Chocó (límite con Pacífico)
+                                [12.5, -71.0], // La Guajira
+                                [10.0, -73.0], // Cesar
+                                [8.0, -75.0],  // Córdoba
+                                [8.5, -77.0]   // Antioquia (límite con Pacífico)
+                            ], {
+                                color: '#f8b400',
+                                fillColor: '#f8b400',
+                                fillOpacity: 0.2
+                            }).addTo(map);
+                        });
+                    </script>
+                </div>
+            </div>
+        </section>
+        
+        <section class="attractions">
+            <div class="container">
+                <h2 class="section-title">Atractivos Principales</h2>
+                
+                <div class="attraction-card">
+                    <div class="attraction-image">
+                        <img src="../img/regiones/Caribe/caribe 2.jpg" alt="Cartagena - Ciudad amurallada">
+                    </div>
+                    <div class="attraction-content">
+                        <h3>Cartagena - Ciudad amurallada</h3>
+                        <p>Declarada Patrimonio de la Humanidad por la UNESCO, Cartagena de Indias es una joya colonial con calles empedradas, coloridas casas y balcones floridos. Su centro histórico está rodeado por una imponente muralla construida durante la época colonial para proteger la ciudad de los piratas.</p>
+                        <p>Además de su casco antiguo, Cartagena ofrece hermosas playas, una vibrante vida nocturna en el barrio de Getsemaní, y una exquisita gastronomía que combina sabores del mar con influencias africanas y españolas.</p>
+                    </div>
+                </div>
+                
+                <div class="attraction-card">
+                    <div class="attraction-image">
+                        <img src="../img/regiones/Caribe/caribe 3.jpg" alt="Santa Marta - La perla del Caribe">
+                    </div>
+                    <div class="attraction-content">
+                        <h3>Santa Marta - La perla del Caribe</h3>
+                        <p>La ciudad más antigua de Colombia ofrece una combinación única de playa, montaña y cultura. Desde su malecón y playas urbanas hasta la Sierra Nevada de Santa Marta, el macizo costero más alto del mundo, esta ciudad tiene algo para todos los gustos.</p>
+                        <p>Santa Marta es también la puerta de entrada a destinos como Taganga, un pintoresco pueblo de pescadores, y la Ciudad Perdida (Teyuna), un sitio arqueológico indígena anterior a Machu Picchu.</p>
+                    </div>
+                </div>
+                
+                <div class="attraction-card">
+                    <div class="attraction-image">
+                        <img src="../img/regiones/Caribe/caribe4.jpg" alt="Parque Nacional Natural Tayrona">
+                    </div>
+                    <div class="attraction-content">
+                        <h3>Parque Nacional Natural Tayrona</h3>
+                        <p>Ubicado a pocos kilómetros de Santa Marta, el Parque Tayrona es uno de los destinos naturales más impresionantes de Colombia. Con una combinación única de selva tropical que llega hasta el mar, playas de arena blanca enmarcadas por enormes rocas, y una rica biodiversidad, el parque ofrece una experiencia inolvidable.</p>
+                        <p>Cabo San Juan, Arrecifes, La Piscina y Pueblito (un antiguo asentamiento indígena) son algunos de los lugares más visitados dentro del parque, que también es hogar de diversas especies de flora y fauna.</p>
+                    </div>
+                </div>
+                
+                <div class="attraction-card">
+                    <div class="attraction-image">
+                        <img src="../img/regiones/Caribe/caribe 5.jpg" alt="Barranquilla - Carnaval patrimonio de la humanidad">
+                    </div>
+                    <div class="attraction-content">
+                        <h3>Barranquilla - Carnaval patrimonio de la humanidad</h3>
+                        <p>Conocida como "La Puerta de Oro de Colombia", Barranquilla es famosa por su Carnaval, considerado uno de los más importantes del mundo y declarado Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO.</p>
+                        <p>Durante cuatro días antes de la Cuaresma, la ciudad se llena de color, música y danza con desfiles como la Batalla de Flores, la Gran Parada y el Festival de Orquestas. El resto del año, Barranquilla ofrece una vibrante escena cultural, gastronómica y comercial.</p>
+                    </div>
+                </div>
+                
+                <div class="attraction-card">
+                    <div class="attraction-image">
+                        <img src="../img/regiones/Caribe/caribe 7.jpg" alt="San Andrés y Providencia - Islas paradisíacas">
+                    </div>
+                    <div class="attraction-content">
+                        <h3>San Andrés y Providencia - Islas paradisíacas</h3>
+                        <p>Este archipiélago en el Caribe occidental ofrece algunas de las playas más hermosas de Colombia y aguas cristalinas de siete tonos de azul (el famoso "mar de siete colores"). San Andrés, la isla principal, combina playas paradisíacas con una animada vida comercial y turística.</p>
+                        <p>Providencia, más pequeña y tranquila, conserva un ambiente más auténtico y cuenta con el tercer arrecife de coral más grande del mundo, ideal para el buceo y el snorkel. La cultura raizal, con influencias africanas, inglesas y caribeñas, añade un encanto especial a estas islas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 1.jpg" alt="Paisaje de la Región Caribe">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 2.jpg" alt="Cartagena">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 3.jpg" alt="Santa Marta">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe4.jpg" alt="Parque Tayrona">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 5.jpg" alt="Barranquilla">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 7.jpg" alt="San Andrés">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html>

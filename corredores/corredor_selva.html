@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor de la Selva - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/la_selva/la\ selva\ 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor de la Selva</h2>
+                    <p>Descubre el pulmón del mundo: biodiversidad, culturas ancestrales y conservación</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor de la Selva</h2>
+                <p>El Corredor de la Selva es una ruta ecoturística y cultural que conecta las regiones clave de la Amazonía colombiana, promoviendo el turismo sostenible, la conservación ambiental y la preservación del patrimonio cultural de los pueblos indígenas. Esta región alberga el 35% de la biodiversidad del país y es parte del bioma del Amazonas, considerado el "pulmón del planeta".</p>
+                <p>Los visitantes pueden sumergirse en experiencias únicas como navegar por los ríos sagrados del Amazonas, participar en rituales ancestrales con comunidades indígenas, observar especies únicas como el delfín rosado y el jaguar, y explorar pinturas rupestres milenarias en el Parque Nacional Chiribiquete.</p>
+                <p>Esta región limita con Brasil y Perú, convirtiéndose en un punto clave para la cooperación transfronteriza en temas de conservación, mientras que más de 60 pueblos indígenas habitan esta región, conservando saberes ancestrales, lenguas, rituales y cosmologías únicas.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-selva" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor de la Selva
+                        var map = L.map('map-selva').setView([-1.5, -72.0], 6);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor de la Selva
+                        var leticia = L.marker([-4.2153, -69.9406]).addTo(map)
+                            .bindPopup('<b>Leticia</b><br>Capital del Amazonas colombiano, puerta de entrada a la selva amazónica.');
+                        
+                        var mocoa = L.marker([1.1539, -76.6511]).addTo(map)
+                            .bindPopup('<b>Mocoa</b><br>Capital de Putumayo, punto de acceso a cascadas y reservas naturales.');
+                        
+                        var mitu = L.marker([1.2581, -70.1706]).addTo(map)
+                            .bindPopup('<b>Mitú</b><br>Capital de Vaupés, corazón de la cultura indígena amazónica.');
+                        
+                        var araracuara = L.marker([-0.5833, -72.3833]).addTo(map)
+                            .bindPopup('<b>Araracuara</b><br>Antiguo penal, hoy punto de acceso al Parque Chiribiquete.');
+                        
+                        var puertoLeguizamo = L.marker([-0.1939, -74.7806]).addTo(map)
+                            .bindPopup('<b>Puerto Leguízamo</b><br>Clave para el turismo fluvial y conexión con Amazonía peruana.');
+                        
+                        var florencia = L.marker([1.6144, -75.6062]).addTo(map)
+                            .bindPopup('<b>Florencia</b><br>Capital de Caquetá, puerta de entrada al piedemonte amazónico.');
+                        
+                        var inirida = L.marker([3.8653, -67.9239]).addTo(map)
+                            .bindPopup('<b>Inírida</b><br>Capital de Guainía, famosa por los Cerros de Mavecure.');
+                        
+                        var sanjose = L.marker([2.5789, -72.6394]).addTo(map)
+                            .bindPopup('<b>San José del Guaviare</b><br>Puerta de entrada a la Macarena y arte rupestre.');
+                        
+                        // Delimitar aproximadamente el Corredor de la Selva con un polígono
+                        var corridorSelva = L.polygon([
+                            [4.5, -67.0],   // Norte Guainía
+                            [2.0, -66.0],   // Noreste
+                            [-5.0, -68.0],  // Sur Amazonas
+                            [-5.0, -78.0],  // Suroeste
+                            [2.0, -78.0],   // Oeste Putumayo
+                            [4.0, -72.0]    // Norte Guaviare
+                        ], {
+                            color: '#228B22',
+                            fillColor: '#228B22',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Trapecio Amazónico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Región fronteriza entre Colombia, Brasil y Perú, donde confluyen culturas indígenas, biodiversidad excepcional y turismo fluvial.</p>
+                            <ul>
+                                <li>Incluye Leticia, Puerto Nariño, Tarapacá y comunidades ribereñas.</li>
+                                <li>Centro de avistamiento de delfines rosados y manatíes.</li>
+                                <li><strong>Atracciones principales:</strong> Isla de los Micos, Parque Nacional Amacayacu, Lago Tarapoto, Puerto Nariño.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Putumayo Cascadas</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta espectaculares cascadas y reservas naturales en el piedemonte amazónico del Putumayo.</p>
+                            <ul>
+                                <li>Abarca Mocoa, Villagarzón, Puerto Caicedo y San Miguel.</li>
+                                <li>Reconocido por sus cascadas cristalinas y piscinas naturales.</li>
+                                <li><strong>Atracciones principales:</strong> Fin del Mundo, El Hornoyaco, Cascada La Chorrera, Termales de San Juan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Cultural Vaupés</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Corazón de la cultura indígena amazónica, donde se preservan tradiciones ancestrales de más de 25 etnias diferentes.</p>
+                            <ul>
+                                <li>Incluye Mitú, Taraira, Carurú y comunidades indígenas del río Vaupés.</li>
+                                <li>Centro de saberes ancestrales y rituales sagrados como el Yuruparí.</li>
+                                <li><strong>Atracciones principales:</strong> Raudal del Jirijirimo, Malocas tradicionales, Piedras sagradas del Vaupés.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Guaviare Rupestre</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Región que alberga los más importantes yacimientos de arte rupestre de América, con pinturas de más de 20,000 años.</p>
+                            <ul>
+                                <li>Incluye San José del Guaviare, Miraflores, Calamar y El Retorno.</li>
+                                <li>Punto de encuentro entre Amazonía, Orinoquía y Andes.</li>
+                                <li><strong>Atracciones principales:</strong> Cerro Azul, Ciudad de Piedra, Raudal del Guayabero, Serranía de La Lindosa.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Guainía Estrella Fluvial</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Región donde nacen importantes ríos amazónicos y se encuentran formaciones rocosas únicas como los Cerros de Mavecure.</p>
+                            <ul>
+                                <li>Incluye Inírida, Barranco Minas, San Felipe y Puerto Colombia.</li>
+                                <li>Reconocido por sus ríos de aguas negras y formaciones geológicas ancestrales.</li>
+                                <li><strong>Atracciones principales:</strong> Cerros de Mavecure, Laguna de las Brujas, Rápidos de Maipures.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Caquetá Piedemonte</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Transición entre la cordillera andina y la llanura amazónica, rico en biodiversidad y sitios paleontológicos.</p>
+                            <ul>
+                                <li>Incluye Florencia, San Vicente del Caguán, Puerto Rico y Cartagena del Chairá.</li>
+                                <li>Importante para la observación de aves y especies endémicas.</li>
+                                <li><strong>Atracciones principales:</strong> Parque Nacional Cordillera de los Picachos, Cueva de Los Guácharos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Expedición Amazónica Integral</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🌳</div>
+                        <div class="route-details">
+                            <h4>Expedición Amazónica</h4>
+                            <p>10 días explorando la biodiversidad, culturas ancestrales y paisajes únicos de la Amazonía colombiana</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1-2: Leticia - Corazón del Amazonas</h4>
+                                <p>Llegada a Leticia, recorrido por el centro y visita al Mercado de Leticia. Navegación por el río Amazonas hacia la Isla de los Micos y observación de delfines rosados. Alojamiento en eco-lodge amazónico.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Puerto Nariño y Lago Tarapoto</h4>
+                                <p>Navegación hacia Puerto Nariño, conocido como el "Pesebre de la Amazonía". Visita al Lago Tarapoto para avistamiento de manatíes y delfines. Caminata ecológica con guía indígena.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Parque Nacional Amacayacu</h4>
+                                <p>Exploración del Parque Nacional Amacayacu con caminatas por senderos interpretativos. Observación de primates endémicos, aves exóticas y plantas medicinales. Visita a maloca tradicional.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Vuelo a Mocoa - Putumayo</h4>
+                                <p>Traslado aéreo a Mocoa. Tarde de descanso y preparación para expedición a cascadas. Visita al centro de Mocoa y degustación de gastronomía típica putumayense.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 6: Cascadas Fin del Mundo y El Hornoyaco</h4>
+                                <p>Expedición a las espectaculares cascadas Fin del Mundo y El Hornoyaco. Caminata por senderos naturales, baño en piscinas cristalinas y almuerzo campestre.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 7: San José del Guaviare - Arte Rupestre</h4>
+                                <p>Vuelo a San José del Guaviare. Expedición a los petroglifos de Cerro Azul con pinturas rupestres de más de 20,000 años. Exploración de la Ciudad de Piedra.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 8: Serranía de La Lindosa</h4>
+                                <p>Expedición completa a la Serranía de La Lindosa para observar la "Capilla Sixtina" de América con miles de pinturas rupestres. Camping bajo las estrellas amazónicas.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 9: Inírida - Cerros de Mavecure</h4>
+                                <p>Vuelo a Inírida y navegación hacia los míticos Cerros de Mavecure. Ascenso al Cerro Pajarito para vista panorámica de la Estrella Fluvial de Inírida.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 10: Regreso y Reflexión</h4>
+                                <p>Último recorrido por ríos de aguas negras y cristalinas. Reflexión sobre la experiencia amazónica y la importancia de la conservación. Retorno a Bogotá.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🎒</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Vuelos domésticos entre destinos amazónicos</li>
+                                <li>Alojamiento en eco-lodges y hoteles sostenibles</li>
+                                <li>Guías especializados indígenas y biólogos</li>
+                                <li>Todas las navegaciones fluviales y entradas a parques</li>
+                                <li>Experiencias culturales auténticas con comunidades</li>
+                                <li>Alimentación incluida con productos locales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/la_selva/la selva 1.jpg" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/la_selva/la selva 2.jpg" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/la_selva/la selva 3.jpg" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/la_selva/la selva 4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/la_selva/la selva 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor Caribe - Ruta del Encanto Tropical - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Caribe/caribe 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Caribe - Ruta del Encanto Tropical</h2>
+                    <p>Descubre la magia del Caribe colombiano entre playas paradisíacas, cultura vibrante y tradiciones ancestrales</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor Caribe - Ruta del Encanto Tropical</h2>
+                <p>El Corredor Caribe colombiano es una fascinante región que se extiende a lo largo de la costa norte del país, abarcando cinco departamentos únicos: Bolívar, Atlántico, Magdalena, La Guajira y Cesar. Esta región tropical se caracteriza por sus playas de aguas cristalinas, ciudades coloniales amuralladas, desiertos místicos, sierras nevadas y una riqueza cultural incomparable.</p>
+                <p>Desde la histórica Cartagena de Indias hasta los paisajes desérticos de La Guajira, pasando por la vibrante Barranquilla y la mágica Santa Marta, este corredor ofrece experiencias únicas que van desde el patrimonio histórico declarado por la UNESCO hasta tradiciones ancestrales de pueblos indígenas como los Wayuu, además de ser la cuna de ritmos musicales como el vallenato, la cumbia y el mapalé.</p>
+                <p>Los visitantes pueden disfrutar de una amplia gama de experiencias: explorar ciudades coloniales, relajarse en playas paradisíacas, practicar deportes acuáticos, conocer culturas indígenas auténticas, recorrer parques naturales únicos y vivir la alegría del Carnaval de Barranquilla, considerado Patrimonio Cultural Inmaterial de la Humanidad.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-caribe" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor Caribe
+                        var map = L.map('map-caribe').setView([10.5, -74.0], 7);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor Caribe
+                        var cartagena = L.marker([10.3932, -75.4832]).addTo(map)
+                            .bindPopup('<b>Cartagena de Indias</b><br>Ciudad amurallada Patrimonio de la Humanidad, joya colonial del Caribe.');
+                        
+                        var barranquilla = L.marker([10.9639, -74.7964]).addTo(map)
+                            .bindPopup('<b>Barranquilla</b><br>Puerta de Oro de Colombia, famosa por su Carnaval y cultura caribeña.');
+                        
+                        var santaMarta = L.marker([11.2408, -74.2099]).addTo(map)
+                            .bindPopup('<b>Santa Marta</b><br>La ciudad más antigua de Colombia, puerta de entrada al Parque Tayrona.');
+                        
+                        var riohacha = L.marker([11.5444, -72.9072]).addTo(map)
+                            .bindPopup('<b>Riohacha</b><br>Capital de La Guajira, punto de partida para explorar el desierto y la cultura Wayuu.');
+                        
+                        var valledupar = L.marker([10.4631, -73.2532]).addTo(map)
+                            .bindPopup('<b>Valledupar</b><br>Cuna del vallenato, ciudad de tradiciones musicales y culturales.');
+                        
+                        var mompox = L.marker([9.2378, -74.4269]).addTo(map)
+                            .bindPopup('<b>Santa Cruz de Mompox</b><br>Villa colonial a orillas del Magdalena, Patrimonio de la Humanidad.');
+                        
+                        var puntaGallinas = L.marker([12.4694, -71.6714]).addTo(map)
+                            .bindPopup('<b>Punta Gallinas</b><br>El punto más septentrional de Sudamérica, paisajes desérticos únicos.');
+                        
+                        var parqueTayrona = L.marker([11.3089, -73.9653]).addTo(map)
+                            .bindPopup('<b>Parque Nacional Tayrona</b><br>Paraíso natural con playas vírgenes y biodiversidad única.');
+                        
+                        // Delimitar aproximadamente el Corredor Caribe con un polígono
+                        var corridorCaribe = L.polygon([
+                            [12.6, -71.3],  // Punta Gallinas
+                            [12.0, -71.0],  // Noreste La Guajira
+                            [10.0, -71.5],  // Este Cesar
+                            [8.5, -73.5],   // Sur Bolívar
+                            [9.0, -76.0],   // Suroeste Bolívar
+                            [11.0, -77.0],  // Noroeste Atlántico
+                            [11.5, -75.0],  // Norte Magdalena
+                            [12.5, -72.0]   // Noroeste La Guajira
+                        ], {
+                            color: '#ff6b35',
+                            fillColor: '#ff6b35',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos por Departamento</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Histórico de Bolívar</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta las principales joyas coloniales y sitios históricos del departamento de Bolívar, desde Cartagena hasta Mompox.</p>
+                            <ul>
+                                <li><strong>46 municipios</strong> incluyendo Cartagena, Mompox, El Carmen de Bolívar y Magangué.</li>
+                                <li><strong>Patrimonio Material:</strong> Ciudad Amurallada de Cartagena, Castillo de San Felipe, Centro Histórico de Mompox, Cementerio de Mompox.</li>
+                                <li><strong>Patrimonio Inmaterial:</strong> San Basilio de Palenque, Semana Santa en Mompox, Fiestas de la Candelaria.</li>
+                                <li><strong>Patrimonio Natural:</strong> Parque Nacional Natural Corales del Rosario, Islas del Rosario, Río Magdalena.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Carnavalero de Atlántico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Recorrido por la región que vive y respira el Carnaval, concentrado en Barranquilla y sus municipios aledaños.</p>
+                            <ul>
+                                <li><strong>23 municipios</strong> incluyendo Barranquilla, Soledad, Galapa, Malambo y Puerto Colombia.</li>
+                                <li><strong>Patrimonio Material:</strong> Edificio de la Aduana, Barrio el Prado, Teatro Amira de la Rosa, Museo del Caribe.</li>
+                                <li><strong>Patrimonio Inmaterial:</strong> Carnaval de Barranquilla (Patrimonio de la Humanidad), música tradicional, gastronomía típica.</li>
+                                <li><strong>Patrimonio Natural:</strong> Isla de Salamanca, Ciénaga del Totumo, Embalse del Guájaro.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Magdalena Mágico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que combina historia, naturaleza y cultura desde Santa Marta hasta los pueblos del interior magdalenense.</p>
+                            <ul>
+                                <li><strong>29 municipios</strong> incluyendo Santa Marta, Ciénaga, Fundación, El Banco y Plato.</li>
+                                <li><strong>Patrimonio Material:</strong> Quinta de San Pedro Alejandrino, Catedral de Santa Marta, Museo del Oro Tairona, Estaciones del Ferrocarril.</li>
+                                <li><strong>Patrimonio Inmaterial:</strong> Tradiciones indígenas de la Sierra Nevada, La Cumbia del Banco, saberes tradicionales.</li>
+                                <li><strong>Patrimonio Natural:</strong> Parque Nacional Tayrona, Sierra Nevada de Santa Marta, Ciénaga Grande.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Wayuu de La Guajira</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Experiencia única por el desierto colombiano y la cultura ancestral del pueblo Wayuu, desde Riohacha hasta Punta Gallinas.</p>
+                            <ul>
+                                <li><strong>15 municipios</strong> incluyendo Riohacha, Maicao, Uribia, Manaure y Dibulla.</li>
+                                <li><strong>Patrimonio Material:</strong> Santuario de Nuestra Señora de los Remedios, Museo Etnográfico Wayuu, Malecón de Riohacha.</li>
+                                <li><strong>Patrimonio Inmaterial:</strong> Cultura Wayuu, Festival de la Cultura Wayuu, Leyenda de Francisco el Hombre.</li>
+                                <li><strong>Patrimonio Natural:</strong> Desierto de La Guajira, Cabo de la Vela, Punta Gallinas, Parque Nacional Macuira.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Vallenato del Cesar</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta musical y cultural por la tierra que vio nacer el vallenato, desde Valledupar hasta los pueblos serranos.</p>
+                            <ul>
+                                <li><strong>25 municipios</strong> incluyendo Valledupar, La Paz, Agustín Codazzi, Pueblo Bello y San Diego.</li>
+                                <li><strong>Patrimonio Material:</strong> Casa de la Cultura de Valledupar, Iglesia Inmaculada Concepción, Plaza Alfonso López.</li>
+                                <li><strong>Patrimonio Inmaterial:</strong> Vallenato (Patrimonio de la Humanidad), Festival de la Leyenda Vallenata, danzas tradicionales.</li>
+                                <li><strong>Patrimonio Natural:</strong> Sierra Nevada (zona Cesar), Serranía del Perijá, Río Cesar, Ciénaga de Zapatosa.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Ecoturístico Marino</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta especializada en turismo marino y costero que conecta los principales destinos de playa y reservas naturales del Caribe.</p>
+                            <ul>
+                                <li>Conecta Cartagena, Barranquilla, Santa Marta y La Guajira por la costa.</li>
+                                <li>Ideal para actividades acuáticas, buceo, pesca deportiva y avistamiento de fauna marina.</li>
+                                <li><strong>Atracciones principales:</strong> Islas del Rosario, Parque Tayrona, Santuario de Fauna Los Flamencos, playas de Palomino.</li>
+                                <li>Incluye experiencias de turismo comunitario en comunidades pesqueras.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Gran Tour del Caribe Colombiano</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🏖️</div>
+                        <div class="route-details">
+                            <h4>Ruta del Encanto Tropical</h4>
+                            <p>12 días explorando la diversidad cultural, histórica y natural del Caribe colombiano</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1-3: Cartagena de Indias</h4>
+                                <p>Llegada a Cartagena, recorrido por la Ciudad Amurallada y el Centro Histórico. Visita al Castillo de San Felipe, Palacio de la Inquisición e Iglesia de San Pedro Claver. Excursión a las Islas del Rosario y Playa Blanca. Noche de rumba en la ciudad antigua.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Mompox</h4>
+                                <p>Traslado a Santa Cruz de Mompox, recorrido por sus calles coloniales y talleres de filigrana. Visita al cementerio histórico y navegación por el Río Magdalena. Experiencia gastronómica con especialidades locales como el bollo limpio y el queso de capa.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Barranquilla</h4>
+                                <p>Traslado a Barranquilla, city tour por el Barrio el Prado y el Malecón. Visita al Museo del Caribe y al Teatro Amira de la Rosa. Experiencia cultural en el Gran Malecón del Río y degustación de la gastronomía barranquillera.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 6-7: Santa Marta y Parque Tayrona</h4>
+                                <p>Traslado a Santa Marta, visita a la Quinta de San Pedro Alejandrino y el Centro Histórico. Excursión completa al Parque Nacional Natural Tayrona: Cabo San Juan, Playa Cristal y senderos ecológicos. Alojamiento en ecohabs dentro del parque.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 8: Pueblito Chairama y Palomino</h4>
+                                <p>Caminata al Pueblito Chairama, sitio arqueológico Tairona en el Parque Tayrona. Tarde en Palomino para relajarse en sus playas vírgenes y disfrutar del encuentro entre la Sierra Nevada y el mar Caribe.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 9-10: La Guajira - Riohacha y Cabo de la Vela</h4>
+                                <p>Traslado a Riohacha, recorrido por el Malecón y el mercado indígena. Excursión al Cabo de la Vela: Pilón de Azúcar, Ojo de Agua y Playa Dorada. Experiencia cultural con la comunidad Wayuu, incluyendo la elaboración de mochilas y degustación de comida tradicional.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 11: Punta Gallinas</h4>
+                                <p>Expedición a Punta Gallinas, el punto más septentrional de Sudamérica. Recorrido por dunas desérticas, Bahía Hondita y el Faro. Experiencia de pesca artesanal con los locales y puesta de sol en el extremo norte del continente.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 12: Valledupar</h4>
+                                <p>Traslado a Valledupar, cuna del vallenato. Visita a la Casa de la Cultura, Plaza Alfonso López y el Festival de la Leyenda Vallenata (si coincide con fechas). Experiencia musical con acordeoneros locales y degustación de comida típica cesarense.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🎒</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Transporte terrestre y marítimo entre destinos</li>
+                                <li>Alojamiento en hoteles boutique coloniales y ecohabs</li>
+                                <li>Guías especializados en historia, cultura y naturaleza</li>
+                                <li>Entradas a parques nacionales y sitios históricos</li>
+                                <li>Experiencias gastronómicas y culturales auténticas</li>
+                                <li>Actividades acuáticas y eco-aventuras</li>
+                                <li>Interacción con comunidades indígenas Wayuu</li>
+                                <li>Transporte especializado 4x4 en La Guajira</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 1.jpg" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 2.jpg" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 3.jpg" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Caribe/caribe 6.jpg" alt="Catedral de Sal de Zipaquirá">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

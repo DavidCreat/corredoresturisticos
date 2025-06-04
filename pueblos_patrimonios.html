@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pueblos y Patrimonios - Andes Orientales</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="js/main.js" defer></script>
+    <style>
+        
+        .heritage-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://imagenes.eltiempo.com/files/og_thumbnail/uploads/2023/10/27/653be97736f2d.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 180px 0;
+            text-align: center;
+        }
+        
+        .hero-content h1, .hero-content p {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 4rem;
+            padding: 4rem 0;
+        }
+        
+        .heritage-intro {
+            background-color: #f8f9fa;
+        }
+        
+        .pueblos-section {
+            background-color: white;
+        }
+        
+        .patrimonios-section {
+            background-color: #f8f9fa;
+        }
+        
+        /* Estilos para las tarjetas de pueblos */
+        .pueblo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        
+        .pueblo-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pueblo-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .pueblo-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .pueblo-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #d4a574;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .pueblo-content {
+            padding: 2rem;
+        }
+        
+        .pueblo-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .pueblo-subtitle {
+            color: #d4a574;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .pueblo-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .pueblo-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .pueblo-features li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .pueblo-features li:before {
+            content: "✓";
+            color: #d4a574;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        /* Estilos para patrimonios */
+        .patrimonio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .patrimonio-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .patrimonio-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .patrimonio-card:hover:before {
+            opacity: 1;
+        }
+        
+        .patrimonio-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .patrimonio-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .patrimonio-description {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        /* Estilos especiales para diferentes tipos de patrimonio */
+        .patrimonio-arquitectonico {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+        }
+        
+        .patrimonio-religioso {
+            background: linear-gradient(135deg, #4B0082 0%, #8A2BE2 100%);
+        }
+        
+        .patrimonio-natural {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+        }
+        
+        .patrimonio-cultural {
+            background: linear-gradient(135deg, #DC143C 0%, #FF6347 100%);
+        }
+        
+        /* Mapa de ubicaciones */
+        .heritage-map {
+            background-color: white;
+            padding: 4rem 0;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .pueblo-grid, .patrimonio-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .pueblo-content, .patrimonio-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Volver</a></li>
+                    <li><a href="corredores/andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="corredores/sur.html">Corredor del Sur</a>
+                            <a href="corredores/pacifico.html">Corredor del Pacífico</a>
+                            <a href="corredores/andino.html">Corredor Andino</a>
+                            <a href="corredores/caribe.html">Corredor del Caribe</a>
+                            <a href="corredores/sea_flower.html">Corredor Sea Flower</a>
+                            <a href="corredores/antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredores/corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="heritage-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Pueblos y Patrimonios</h1>
+                    <p>Descubre los tesoros coloniales y patrimoniales de los Andes Orientales, donde cada piedra cuenta una historia de más de 500 años</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="heritage-intro">
+            <div class="container">
+                <h2 class="section-title">Legado Colonial de los Andes Orientales</h2>
+                <p>Los Andes Orientales de Colombia albergan algunos de los pueblos coloniales mejor preservados del continente americano. Esta región, cuna de la independencia y escenario de importantes acontecimientos históricos, conserva intacta la arquitectura, tradiciones y patrimonio cultural que la convierten en un destino único para el turismo cultural.</p>
+                <p>Desde las calles empedradas de Villa de Leyva hasta los imponentes templos de Tunja, cada pueblo cuenta una historia diferente pero conectada por el hilo conductor de la herencia española, la resistencia indígena y el mestizaje cultural que define la identidad colombiana.</p>
+            </div>
+        </section>
+        
+        <section class="pueblos-section">
+            <div class="container">
+                <h2 class="section-title">Pueblos Patrimoniales</h2>
+                
+                <div class="pueblo-grid">
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b0/Plaza_Central_o_Plaza_Principal%E2%80%94_Villa_de_Leyva%2C_Boyac%C3%A1%2C_Colombia.jpg');">
+                            <div class="pueblo-badge">Patrimonio Nacional</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Villa de Leyva</h3>
+                            <p class="pueblo-subtitle">La Joya Colonial de Boyacá</p>
+                            <p class="pueblo-description">Considerado uno de los pueblos más hermosos de Colombia, Villa de Leyva conserva intacta su arquitectura colonial del siglo XVI. Su plaza principal es la más grande del país y está rodeada de casas de adobe y tejas de barro.</p>
+                            <ul class="pueblo-features">
+                                <li>Plaza Mayor de 14.000 m² empedrada</li>
+                                <li>Casa del Fundador Hernán Suárez de Villalobos</li>
+                                <li>Convento del Santo Ecce Homo</li>
+                                <li>Museo Paleontológico</li>
+                                <li>Casa Terracota</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://cotelcosantander.org/wp-content/uploads/2024/09/barichara_calle_colonial.jpg');">
+                            <div class="pueblo-badge">Monumento Nacional</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Barichara</h3>
+                            <p class="pueblo-subtitle">El Pueblo Más Lindo de Colombia</p>
+                            <p class="pueblo-description">Barichara es un pueblo colonial santandereano famoso por su arquitectura de piedra, sus calles empedradas y su perfecta conservación. Es punto de partida del histórico Camino Real a Guane.</p>
+                            <ul class="pueblo-features">
+                                <li>Arquitectura en piedra tallada</li>
+                                <li>Capilla de Santa Bárbara</li>
+                                <li>Camino Real a Guane (9 km)</li>
+                                <li>Taller de oficios tradicionales</li>
+                                <li>Mirador del Salto del Mico</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://thumbs.dreamstime.com/b/colombia-pueblo-colonial-de-guane-90805691.jpg');">
+                            <div class="pueblo-badge">Patrimonio Histórico</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Guane</h3>
+                            <p class="pueblo-subtitle">El Pueblo del Tiempo Detenido</p>
+                            <p class="pueblo-description">Pequeño pueblo colonial al que se llega caminando desde Barichara por el histórico Camino Real. Conserva la tranquilidad y arquitectura del siglo XVIII casi intactas.</p>
+                            <ul class="pueblo-features">
+                                <li>Museo Arqueológico y Paleontológico</li>
+                                <li>Iglesia de Santa Lucía (1720)</li>
+                                <li>Casa de la Cultura</li>
+                                <li>Artesanías en fique</li>
+                                <li>Dulces tradicionales</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://www.cronista.com/files/image/1045/1045259/67785412bf465_728_418!.jpg?s=c616347c182eb12c19706ccb347011e3&d=1735939093');">
+                            <div class="pueblo-badge">Pueblo Patrimonio</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Monguí</h3>
+                            <p class="pueblo-subtitle">Capital Balompiédica de Colombia</p>
+                            <p class="pueblo-description">Pintoresco pueblo boyacense famoso por la fabricación artesanal de balones de fútbol. Sus calles empedradas y casas coloniales lo convierten en uno de los destinos más auténticos de la región.</p>
+                            <ul class="pueblo-features">
+                                <li>Basílica de Nuestra Señora de Monguí</li>
+                                <li>Talleres de balones artesanales</li>
+                                <li>Puente de los Libertadores</li>
+                                <li>Páramo de Ocetá cercano</li>
+                                <li>Festival del Balón (diciembre)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://static.caribbeannewsdigital.com/cdn/ff/WGft9e24ktDgJR9yFHSSdzAIkO3EPMFsEv-sS6WNyaM/1707784886/public/2020-06/r%C3%A1quira%201.jpg');">
+                            <div class="pueblo-badge">Capital Alfarera</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Ráquira</h3>
+                            <p class="pueblo-subtitle">La Capital Artesanal de Colombia</p>
+                            <p class="pueblo-description">Conocido como el pueblo de las ollas, Ráquira es famoso por sus coloridas artesanías en barro y cerámica. Sus casas pintadas de colores vivos reflejan la alegría de sus habitantes.</p>
+                            <ul class="pueblo-features">
+                                <li>Talleres de cerámica y alfarería</li>
+                                <li>Iglesia de San Antonio de Padua</li>
+                                <li>Convento de La Candelaria</li>
+                                <li>Festival de la Cerámica</li>
+                                <li>Mercado artesanal permanente</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pueblo-card">
+                        <div class="pueblo-image" style="background-image: url('https://www.zipaquira.travel/wp-content/uploads/2022/02/parque-principal.jpg');">
+                            <div class="pueblo-badge">Ciudad Sal</div>
+                        </div>
+                        <div class="pueblo-content">
+                            <h3 class="pueblo-title">Zipaquirá</h3>
+                            <p class="pueblo-subtitle">La Primera Maravilla de Colombia</p>
+                            <p class="pueblo-description">Famosa por su Catedral de Sal subterránea, Zipaquirá también posee un hermoso centro histórico colonial y tradiciones ancestrales relacionadas con la extracción de sal.</p>
+                            <ul class="pueblo-features">
+                                <li>Catedral de Sal (180 m bajo tierra)</li>
+                                <li>Catedral Diocesana del Santísimo Salvador</li>
+                                <li>Casa de la Cultura</li>
+                                <li>Parque de la Sal</li>
+                                <li>Estación del Tren de la Sabana</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="patrimonios-section">
+            <div class="container">
+                <h2 class="section-title">Patrimonios de la Humanidad y Monumentos Nacionales</h2>
+                
+                <div class="patrimonio-grid">
+                    <div class="patrimonio-card patrimonio-arquitectonico">
+                        <span class="patrimonio-icon">🏛️</span>
+                        <h3 class="patrimonio-title">Patrimonio Arquitectónico</h3>
+                        <p class="patrimonio-description">La arquitectura colonial de los Andes Orientales representa uno de los conjuntos mejor conservados de América. Iglesias, conventos, casas señoriales y plazas que mantienen intacto el esplendor de los siglos XVI al XVIII.</p>
+                    </div>
+                    
+                    <div class="patrimonio-card patrimonio-religioso">
+                        <span class="patrimonio-icon">⛪</span>
+                        <h3 class="patrimonio-title">Patrimonio Religioso</h3>
+                        <p class="patrimonio-description">Templos y conventos que albergan arte sacro de incalculable valor. La Catedral de Sal de Zipaquirá, los conventos de Villa de Leyva y las iglesias coloniales de Tunja forman parte de este invaluable legado.</p>
+                    </div>
+                    
+                    <div class="patrimonio-card patrimonio-natural">
+                        <span class="patrimonio-icon">🌿</span>
+                        <h3 class="patrimonio-title">Patrimonio Natural</h3>
+                        <p class="patrimonio-description">Parques nacionales, páramos y reservas naturales que protegen ecosistemas únicos. El Parque Nacional Natural Chingaza, los páramos de Boyacá y las lagunas sagradas forman parte de este tesoro natural.</p>
+                    </div>
+                    
+                    <div class="patrimonio-card patrimonio-cultural">
+                        <span class="patrimonio-icon">🎭</span>
+                        <h3 class="patrimonio-title">Patrimonio Cultural</h3>
+                        <p class="patrimonio-description">Tradiciones, festivales, gastronomía y oficios artesanales que se han transmitido de generación en generación. Las técnicas alfareras de Ráquira, los tejidos boyacenses y las festividades religiosas mantienen viva la cultura ancestral.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="heritage-map">
+            <div class="container">
+                <h2 class="section-title">Mapa de Pueblos Patrimoniales</h2>
+                <div id="heritage-map" style="width: 100%; height: 500px; border-radius: 15px;"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en los Andes Orientales
+                        var map = L.map('heritage-map').setView([5.5, -73.5], 8);
+                        
+                        // Añadir capa de mapa base
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Definir iconos personalizados para diferentes tipos de patrimonio
+                        var heritageIcon = L.divIcon({
+                            className: 'custom-div-icon',
+                            html: "<div style='background-color:#d4a574;width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3);'></div>",
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        });
+                        
+                        // Añadir marcadores para los pueblos patrimoniales
+                        var villaLeyva = L.marker([5.6333, -73.5333], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Villa de Leyva</b><br>Patrimonio Nacional<br>Plaza Mayor más grande de Colombia<br>Arquitectura colonial del siglo XVI');
+                        
+                        var barichara = L.marker([6.6431, -73.2267], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Barichara</b><br>Monumento Nacional<br>El pueblo más lindo de Colombia<br>Arquitectura en piedra tallada');
+                        
+                        var guane = L.marker([6.5581, -73.0167], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Guane</b><br>Pueblo Colonial<br>Destino del Camino Real<br>Museo Arqueológico');
+                        
+                        var mongui = L.marker([5.8667, -72.8333], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Monguí</b><br>Pueblo Patrimonio<br>Capital balompiédica de Colombia<br>Basílica de Nuestra Señora');
+                        
+                        var raquira = L.marker([5.5333, -73.6333], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Ráquira</b><br>Capital Artesanal<br>Pueblo de las ollas<br>Cerámica y alfarería tradicional');
+                        
+                        var zipaquira = L.marker([5.0242, -74.0239], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Zipaquirá</b><br>Primera Maravilla de Colombia<br>Catedral de Sal subterránea<br>Centro histórico colonial');
+                        
+                        var tunja = L.marker([5.5353, -73.3678], {icon: heritageIcon}).addTo(map)
+                            .bindPopup('<b>Tunja</b><br>Capital de Boyacá<br>Ciudad histórica colonial<br>Cuna de la independencia');
+                        
+                        // Añadir área aproximada de los Andes Orientales patrimoniales
+                        var heritageArea = L.polygon([
+                            [7.0, -72.5],
+                            [7.0, -74.5],
+                            [4.5, -74.5],
+                            [4.5, -72.5]
+                        ], {
+                            color: '#d4a574',
+                            fillColor: '#d4a574',
+                            fillOpacity: 0.1,
+                            weight: 2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor del Sur - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Pacifica/pacifico 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico del Sur</h2>
+                    <p>Descubre la magia de Nariño, Putumayo y Caquetá, una experiencia única entre los Andes y la Amazonía</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor del Sur</h2>
+                <p>El corredor turístico Sur lo componen los departamentos de Nariño, Caquetá y Putumayo, ubicados al suroccidente del país. Esta región ofrece una increíble diversidad de paisajes, desde los altos Andes hasta la exuberante selva amazónica, pasando por valles, lagunas y cascadas de ensueño.</p>
+                <p>La riqueza cultural de este corredor es inmensa, con tradiciones ancestrales de pueblos indígenas, festividades reconocidas internacionalmente como el Carnaval de Negros y Blancos, y una gastronomía única que fusiona sabores andinos y amazónicos.</p>
+                <p>Este corredor es ideal para los amantes del ecoturismo, la espiritualidad, la cultura ancestral y la naturaleza en su estado más puro.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-sur" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor del Sur
+                        var map = L.map('map-sur').setView([1.5, -76.5], 7);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor del Sur
+                        var pasto = L.marker([1.2136, -77.2811]).addTo(map)
+                            .bindPopup('<b>Pasto</b><br>Capital de Nariño y sede del Carnaval de Negros y Blancos.');
+                        
+                        var laCocha = L.marker([1.1386, -77.1494]).addTo(map)
+                            .bindPopup('<b>Laguna de La Cocha</b><br>Segundo humedal más grande de Colombia, sitio sagrado indígena.');
+                        
+                        var lasLajas = L.marker([0.8042, -77.5833]).addTo(map)
+                            .bindPopup('<b>Santuario de Las Lajas</b><br>Impresionante basílica construida sobre el río Guáitara.');
+                        
+                        var mocoa = L.marker([1.1519, -76.6428]).addTo(map)
+                            .bindPopup('<b>Mocoa</b><br>Capital de Putumayo, puerta a las Cascadas del Fin del Mundo.');
+                        
+                        var sibundoy = L.marker([1.1833, -76.9167]).addTo(map)
+                            .bindPopup('<b>Valle de Sibundoy</b><br>Valle andino-amazónico con rica cultura indígena.');
+                        
+                        var florencia = L.marker([1.6136, -75.6164]).addTo(map)
+                            .bindPopup('<b>Florencia</b><br>Capital de Caquetá, puerta de entrada a la Amazonía.');
+                        
+                        var guacharos = L.marker([1.6167, -76.0000]).addTo(map)
+                            .bindPopup('<b>Parque Nacional Natural Cueva de los Guácharos</b><br>Famoso por sus cuevas de roca calcárea y bosques andinos.');
+                        
+                        // Delimitar aproximadamente el Corredor del Sur con un polígono
+                        var corridorSur = L.polygon([
+                            [2.5, -78.0],  // Nariño norte
+                            [2.0, -76.0],  // Caquetá oeste
+                            [0.5, -75.0],  // Putumayo este
+                            [0.0, -77.0],  // Frontera con Ecuador
+                            [0.5, -78.5]   // Costa Pacífica sur
+                        ], {
+                            color: '#f8b400',
+                            fillColor: '#f8b400',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Patrimonio Cultural y Natural</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonios Culturales Materiales</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <h4>Nariño</h4>
+                            <ul>
+                                <li><strong>Santuario de Las Lajas (Ipiales):</strong> Construido sobre un cañón del río Guáitara, mezcla arquitectura gótica con un entorno natural impresionante.</li>
+                                <li><strong>Centro histórico de Pasto:</strong> Incluye iglesias coloniales, casas antiguas y plazas tradicionales que muestran la historia de la ciudad.</li>
+                                <li><strong>Volcán Cumbal – Caldera:</strong> Además de su valor natural, tiene valor geocultural e histórico para comunidades indígenas como los Pastos.</li>
+                                <li><strong>Iglesias y plazas tradicionales:</strong> En Túquerres, Sandoná, San Pablo, La Cruz, Buesaco y Chachagüí.</li>
+                            </ul>
+                            
+                            <h4>Putumayo</h4>
+                            <ul>
+                                <li><strong>Orito Ingi Ande:</strong> Centro etnobotánico que conserva saberes ancestrales y plantas medicinales sagradas.</li>
+                                <li><strong>Sitios históricos:</strong> Villa Garzón, Puerto Asís, Puerto Caicedo y Puerto Leguízamo.</li>
+                            </ul>
+                            
+                            <h4>Caquetá</h4>
+                            <ul>
+                                <li><strong>Arquitectura en Florencia:</strong> Y pueblos tradicionales como Belén de los Andaquíes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonios Culturales Inmateriales</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <h4>Nariño</h4>
+                            <ul>
+                                <li><strong>Carnaval de Negros y Blancos (Pasto):</strong> Fiesta popular entre el 2 y el 7 de enero, que promueve la integración social, étnica y cultural. Patrimonio Inmaterial de la Humanidad (UNESCO, 2009).</li>
+                                <li><strong>Tradiciones indígenas y campesinas:</strong> En municipios como Imués, Túquerres, Sandoná y Chachagüí (tejidos, música, festividades religiosas).</li>
+                            </ul>
+                            
+                            <h4>Putumayo</h4>
+                            <ul>
+                                <li><strong>Saberes indígenas:</strong> Uso tradicional de plantas medicinales, ceremonias espirituales con yagé y cosmovisión Inga y Kofán.</li>
+                                <li><strong>Prácticas chamánicas:</strong> En Orito, Puerto Asís y Puerto Leguízamo.</li>
+                            </ul>
+                            
+                            <h4>Caquetá</h4>
+                            <ul>
+                                <li><strong>Oralidad y espiritualidad:</strong> De los Andaquíes.</li>
+                                <li><strong>Manifestaciones religiosas y festivales:</strong> En Florencia, Morelia, La Montañita y Belén de los Andaquíes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonio Natural</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <h4>Nariño</h4>
+                            <ul>
+                                <li><strong>Laguna de La Cocha:</strong> Segunda laguna más grande de Colombia, humedal de alta montaña y sitio sagrado para pueblos indígenas.</li>
+                                <li><strong>Volcán Galeras:</strong> Área natural protegida con importancia cultural. Uno de los volcanes más activos de Colombia.</li>
+                                <li><strong>Volcán Cumbal:</strong> Reserva natural con rutas ecoturísticas.</li>
+                                <li><strong>Paisajes andinos y cañones:</strong> En Imués, Azufral, y La Unión.</li>
+                            </ul>
+                            
+                            <h4>Putumayo</h4>
+                            <ul>
+                                <li><strong>Parque Nacional Natural La Playa:</strong> Ecosistema amazónico, conecta ecosistemas ricos en flora y fauna con tradiciones indígenas de conservación.</li>
+                                <li><strong>Ríos Putumayo y Caquetá:</strong> Principales vías de conexión natural y cultural.</li>
+                                <li><strong>Reservas y cascadas:</strong> En Mocoa (cascadas del fin del mundo), Puerto Asís y Puerto Leguízamo.</li>
+                            </ul>
+                            
+                            <h4>Caquetá</h4>
+                            <ul>
+                                <li><strong>Parque Nacional Natural Cueva de los Guácharos:</strong> Se destaca por sus cuevas de roca calcárea, bosques andinos y presencia del guácharo, un ave nocturna única.</li>
+                                <li><strong>Parque Nacional Natural Serranía de Chiribiquete:</strong> Declarado Patrimonio Mixto (natural + cultural) de la Humanidad por la UNESCO en 2018.</li>
+                                <li><strong>Paisajes selváticos y montañosos:</strong> Entre Florencia y Morelia.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Corredor del Sur en 5 Días</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🌎</div>
+                        <div class="route-details">
+                            <h4>Regiones</h4>
+                            <p>Nariño – Putumayo – Caquetá</p>
+                        </div>
+                    </div>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">⏱️</div>
+                        <div class="route-details">
+                            <h4>Duración</h4>
+                            <p>5 días / 4 noches</p>
+                        </div>
+                    </div>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧭</div>
+                        <div class="route-details">
+                            <h4>Tipo de experiencia</h4>
+                            <p>Ecoturismo, espiritualidad, cultura ancestral, naturaleza</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1 – Pasto y Laguna de la Cocha (Nariño)</h4>
+                                <p>Llegada a Pasto, visita al centro histórico y sus iglesias coloniales. Por la tarde, excursión a la Laguna de La Cocha, el segundo humedal más grande de Colombia y sitio sagrado para los pueblos indígenas. Posibilidad de navegar por la laguna y visitar la Isla de La Corota.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 2 – Valle de Sibundoy y Travesía hacia Mocoa (Putumayo)</h4>
+                                <p>Salida temprano hacia el Valle de Sibundoy, hogar de las comunidades indígenas Kamentsá e Inga. Visita a talleres artesanales y conocimiento de su medicina tradicional. Continuación del viaje hacia Mocoa, atravesando impresionantes paisajes de transición entre los Andes y la Amazonía.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3 – Cascada del Fin del Mundo y Turismo Espiritual</h4>
+                                <p>Excursión a las famosas Cascadas del Fin del Mundo, un conjunto de impresionantes caídas de agua en medio de la selva. Por la tarde, participación opcional en una ceremonia espiritual con yagé, guiada por chamanes locales que comparten su sabiduría ancestral.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4 – Puerto Asís y Plantas Medicinales de Orito</h4>
+                                <p>Viaje a Puerto Asís para conocer la vida a orillas del río Putumayo. Visita al centro etnobotánico Orito Ingi Ande, donde se preservan saberes ancestrales sobre plantas medicinales sagradas. Interacción con comunidades locales y aprendizaje sobre sus tradiciones.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5 – Ruta a Florencia (Caquetá) y Cueva de los Guácharos</h4>
+                                <p>Traslado a Florencia, capital del Caquetá. En el camino, visita al Parque Nacional Natural Cueva de los Guácharos, famoso por sus cuevas de roca calcárea, bosques andinos y la presencia del guácharo, un ave nocturna única. Finalización del recorrido en Florencia.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Transporte terrestre</li>
+                                <li>Alojamiento en hoteles ecológicos y rurales</li>
+                                <li>Guías locales e intérpretes culturales</li>
+                                <li>Alimentación (según itinerario)</li>
+                                <li>Actividades ecológicas y culturales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html>

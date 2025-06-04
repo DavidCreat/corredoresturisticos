@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor Andes Orientales - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Andina/andina 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico Andes Orientales</h2>
+                    <p>Descubre la riqueza histórica y cultural de la Cordillera Oriental colombiana</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor Andes Orientales</h2>
+                <p>El Corredor de los Andes Orientales abarca la Cordillera Oriental de Colombia, desde la frontera con Venezuela hasta el centro del país. Esta región se caracteriza por sus impresionantes paisajes montañosos, pueblos coloniales preservados, parques nacionales únicos y una rica historia que se remonta a la época precolombina.</p>
+                <p>Esta zona incluye importantes departamentos como Norte de Santander, Santander, Boyacá y Cundinamarca, donde se encuentran ciudades históricas como Cúcuta, Bucaramanga, Tunja y Bogotá. El corredor es famoso por sus tradiciones culturales, arquitectura colonial, gastronomía típica y sitios arqueológicos de gran valor.</p>
+                <p>Los visitantes pueden disfrutar de experiencias únicas como explorar la Catedral de Sal de Zipaquirá, caminar por las calles empedradas de Villa de Leyva, practicar deportes extremos en San Gil, y conocer la historia de la independencia en diversos museos y sitios históricos.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-andes-orientales" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor Andes Orientales
+                        var map = L.map('map-andes-orientales').setView([6.5, -73.0], 7);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor Andes Orientales
+                        var cucuta = L.marker([7.8939, -72.5078]).addTo(map)
+                            .bindPopup('<b>Cúcuta</b><br>Ciudad fronteriza con gran patrimonio histórico e importancia comercial.');
+                        
+                        var bucaramanga = L.marker([7.1254, -73.1198]).addTo(map)
+                            .bindPopup('<b>Bucaramanga</b><br>Capital de Santander, conocida como la "Ciudad de los Parques".');
+                        
+                        var sanGil = L.marker([6.5578, -73.1372]).addTo(map)
+                            .bindPopup('<b>San Gil</b><br>Capital turística de Santander, ideal para deportes de aventura.');
+                        
+                        var barichara = L.marker([6.6431, -73.2267]).addTo(map)
+                            .bindPopup('<b>Barichara</b><br>Pueblo colonial considerado uno de los más bonitos de Colombia.');
+                        
+                        var villaDeLeiva = L.marker([5.6333, -73.5333]).addTo(map)
+                            .bindPopup('<b>Villa de Leyva</b><br>Joya arquitectónica colonial con la plaza principal más grande de Colombia.');
+                        
+                        var tunja = L.marker([5.5353, -73.3678]).addTo(map)
+                            .bindPopup('<b>Tunja</b><br>Capital de Boyacá, ciudad histórica con importante legado colonial.');
+                        
+                        var zipaquira = L.marker([5.0242, -74.0239]).addTo(map)
+                            .bindPopup('<b>Zipaquirá</b><br>Famosa por su Catedral de Sal, una de las joyas arquitectónicas subterráneas.');
+                        
+                        var bogota = L.marker([4.6097, -74.0817]).addTo(map)
+                            .bindPopup('<b>Bogotá</b><br>Capital de Colombia, centro político, económico y cultural del país.');
+                        
+                        // Delimitar aproximadamente el Corredor Andes Orientales con un polígono
+                        var corridorAndesOrientales = L.polygon([
+                            [8.5, -72.0],  // Norte Cúcuta
+                            [8.0, -71.5],  // Noreste frontera
+                            [6.0, -72.0],  // Santander oriental
+                            [4.0, -73.5],  // Sur Cundinamarca
+                            [4.5, -75.0],  // Occidente Cundinamarca
+                            [6.0, -74.5],  // Centro Boyacá
+                            [8.0, -73.5]   // Noroeste Santander
+                        ], {
+                            color: '#2196f3',
+                            fillColor: '#2196f3',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Fronterizo Norte de Santander</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Este corredor conecta la frontera con Venezuela con el interior del país, siendo fundamental para el comercio binacional y el turismo fronterizo.</p>
+                            <ul>
+                                <li>Incluye Cúcuta, Villa del Rosario, Los Patios y Chinácota.</li>
+                                <li>Importante para el intercambio comercial y cultural con Venezuela.</li>
+                                <li><strong>Atracciones principales:</strong> Casa Natal del General Santander, Parque Gran Colombiano, Balnearios de Ureña, Centro Histórico de Cúcuta.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Santander Aventura</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta Bucaramanga con los principales destinos turísticos de Santander, especializada en turismo de aventura y naturaleza.</p>
+                            <ul>
+                                <li>Abarca Bucaramanga, San Gil, Barichara, Socorro y Barbosa.</li>
+                                <li>Reconocido internacionalmente por sus actividades de turismo extremo.</li>
+                                <li><strong>Atracciones principales:</strong> Parque Nacional del Chicamocha, Rafting en Río Fonce, Parapente, Camino Real a Guane, Puenting.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Boyacá Colonial</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Recorrido por los principales pueblos coloniales y sitios históricos de Boyacá, desde Tunja hasta Villa de Leyva.</p>
+                            <ul>
+                                <li>Incluye Tunja, Villa de Leyva, Ráquira, Chiquinquirá y Paipa.</li>
+                                <li>Concentra la mayor cantidad de arquitectura colonial preservada del país.</li>
+                                <li><strong>Atracciones principales:</strong> Plaza Mayor de Villa de Leyva, Convento del Santo Ecce Homo, Pozos Azules, Viñedos, Desierto de la Candelaria.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Sabana de Bogotá</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Conecta Bogotá con los municipios aledaños de la Sabana, integrando sitios históricos, religiosos y naturales.</p>
+                            <ul>
+                                <li>Abarca Zipaquirá, Nemocón, Guatavita, Sopó y Cajicá.</li>
+                                <li>Importante para el turismo religioso y cultural cerca de la capital.</li>
+                                <li><strong>Atracciones principales:</strong> Catedral de Sal de Zipaquirá, Laguna de Guatavita, Minas de Sal de Nemocón, Santuario de Nuestra Señora de Monguí.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Páramos y Lagunas</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta especializada en ecoturismo que conecta los principales páramos y lagunas de la Cordillera Oriental.</p>
+                            <ul>
+                                <li>Incluye Páramo de Berlín, Laguna de Tota, Páramo de Iguaque y Páramo de Chingaza.</li>
+                                <li>Ideal para observación de flora y fauna endémica de alta montaña.</li>
+                                <li><strong>Atracciones principales:</strong> Laguna de Tota, Parque Nacional Natural Chingaza, Parque Nacional Natural Iguaque, Frailejones gigantes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Arqueológico y Paleontológico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta que conecta los principales yacimientos arqueológicos y paleontológicos de la región.</p>
+                            <ul>
+                                <li>Incluye Villa de Leyva, Sutamarchán, Sáchica y Tinjacá.</li>
+                                <li>Concentra importantes descubrimientos fósiles y sitios arqueológicos precolombinos.</li>
+                                <li><strong>Atracciones principales:</strong> Museo Paleontológico de Villa de Leyva, Fósil de Kronosaurus, Parque Arqueológico de Monquirá, Museo del Fósil.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Tesoros de los Andes Orientales</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🏔️</div>
+                        <div class="route-details">
+                            <h4>Ruta Andes Orientales</h4>
+                            <p>9 días explorando la historia, cultura y naturaleza de la Cordillera Oriental</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1-2: Cúcuta y Frontera</h4>
+                                <p>Llegada a Cúcuta, visita a la Casa Natal del General Santander y recorrido por el centro histórico. Excursión a Villa del Rosario y exploración de los balnearios fronterizos. Degustación de la gastronomía típica nortesantandereana.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Bucaramanga y Alrededores</h4>
+                                <p>Traslado a Bucaramanga, city tour por los principales parques y el centro comercial. Visita al Cerro del Santísimo para disfrutar de vistas panorámicas. Tarde libre para explorar la gastronomía local, famosa por las hormigas culonas.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: San Gil y Deportes Extremos</h4>
+                                <p>Traslado a San Gil, capital del turismo de aventura. Experiencias de rafting en el Río Fonce, parapente o rappel según preferencias. Tarde de descanso en el Parque El Gallineral. Alojamiento en San Gil.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Barichara y Camino Real</h4>
+                                <p>Visita a Barichara, considerado uno de los pueblos más bonitos de Colombia. Recorrido por sus calles empedradas y caminata por el Camino Real hasta Guane. Regreso a San Gil para el alojamiento.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 6-7: Villa de Leyva</h4>
+                                <p>Traslado a Villa de Leyva, exploración de la Plaza Mayor y sus alrededores. Visita al Convento del Santo Ecce Homo, los Pozos Azules y el Parque Arqueológico de Monquirá. Segundo día dedicado al Parque Nacional Natural Iguaque y degustación en viñedos locales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 8: Zipaquirá</h4>
+                                <p>Traslado a Zipaquirá y visita a la famosa Catedral de Sal, una de las joyas arquitectónicas subterráneas del mundo. Recorrido por el centro histórico de Zipaquirá y sus tradiciones artesanales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 9: Bogotá</h4>
+                                <p>Llegada a Bogotá, recorrido por La Candelaria y el centro histórico. Visita al Museo del Oro y ascenso a Monserrate en teleférico. Tarde libre para explorar la Zona Rosa o el Mercado de las Pulgas de Usaquén.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Transporte terrestre entre destinos</li>
+                                <li>Alojamiento en hoteles coloniales y haciendas</li>
+                                <li>Guías especializados en historia y naturaleza</li>
+                                <li>Entradas a museos y atracciones principales</li>
+                                <li>Experiencias gastronómicas regionales</li>
+                                <li>Actividades de aventura en San Gil</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

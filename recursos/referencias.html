@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referencias Académicas - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Estilos específicos para la página de referencias */
+        .references-section {
+            padding: 6rem 0 4rem;
+            background-color: var(--color-background);
+        }
+
+        .references-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+
+        .academic-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 25px rgba(26, 147, 111, 0.2);
+        }
+
+        .references-intro {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--color-text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .references-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .references-nav {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .references-nav h2 {
+            color: white;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .references-nav p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0.5rem 0 0;
+            font-size: 1rem;
+        }
+
+        .references-content {
+            padding: 3rem;
+        }
+
+        .reference-category {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-icon {
+            font-size: 1.2rem;
+        }
+
+        .reference-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reference-item {
+            background: var(--color-background-alt);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-accent);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .reference-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 147, 111, 0.15);
+            border-left-color: var(--color-secondary);
+        }
+
+        .reference-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--color-text);
+            margin-bottom: 0.8rem;
+        }
+
+        .reference-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .reference-link:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+
+        .reference-link::after {
+            content: '↗';
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .reference-meta {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+
+        .back-to-home {
+            text-align: center;
+            padding: 3rem 0;
+            background: var(--color-background-alt);
+        }
+
+        .citation-note {
+            background: linear-gradient(135deg, rgba(26, 147, 111, 0.1), rgba(12, 75, 51, 0.05));
+            border: 1px solid rgba(26, 147, 111, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .citation-note h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .citation-note p {
+            color: var(--color-text-light);
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .references-section {
+                padding: 4rem 0 2rem;
+            }
+
+            .references-container {
+                margin: 0 10px;
+                border-radius: 15px;
+            }
+
+            .references-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .references-nav {
+                padding: 1.5rem;
+            }
+
+            .references-nav h2 {
+                font-size: 1.6rem;
+            }
+
+            .reference-item {
+                padding: 1.2rem;
+            }
+
+            .category-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .academic-badge {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.8rem;
+            }
+
+            .references-intro {
+                font-size: 1rem;
+            }
+
+            .reference-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="../corredores/andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="../corredores/sur.html">Corredor del Sur</a>
+                            <a href="../corredores/pacifico.html">Corredor del Pacífico</a>
+                            <a href="../corredores/andino.html">Corredor Andino</a>
+                            <a href="../corredores/caribe.html">Corredor del Caribe</a>
+                            <a href="../corredores/sea_flower.html">Corredor Sea Flower</a>
+                            <a href="../corredores/antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="../corredores/corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="references-section">
+
+            <div class="container">
+                <div class="project-badge" style="text-align: center; margin-bottom: 2rem;">
+                    <span>Recursos Académicos</span>
+                </div>
+                <div class="references-header animate-on-scroll">
+                    <h1 class="section-title">Referencias Académicas</h1>
+                    <div class="references-intro">
+                        <p>Bibliografía académica y fuentes oficiales utilizadas en la investigación sobre los
+                            Corredores Turísticos de Colombia. Todas las referencias han sido cuidadosamente
+                            seleccionadas de fuentes confiables y oficiales para garantizar la veracidad y calidad
+                            académica de la información presentada.</p>
+                    </div>
+                </div>
+
+
+                <div class="references-container animate-on-scroll">
+                    <div class="references-nav">
+                        <h2>Fuentes Bibliográficas</h2>
+                        <p>Documentación académica y oficial sobre patrimonio cultural y natural de Colombia</p>
+                    </div>
+
+                    <div class="references-content">
+                        <div class="citation-note">
+                            <h3>📚 Formato de Citación</h3>
+                            <p>Las referencias están organizadas por categorías temáticas y siguen las normas APA 7ª
+                                edición para facilitar su uso académico y verificación de fuentes.</p>
+                        </div>
+
+                        <!-- Patrimonio Cultural Inmaterial -->
+                        <div class="reference-category">
+                            <h3 class="category-title">
+                                <span class="category-icon">🎭</span>
+                                Patrimonio Cultural Inmaterial
+                            </h3>
+                            <ul class="reference-list">
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Ministerio de Cultura. (s.f.). <em>El carnaval de Blancos y Negros</em>.
+                                        Patrimonio Cultural Inmaterial.
+                                    </div>
+                                    <a href="http://patrimonio.mincultura.gov.co/legislacion/Paginas/El-carnaval-de-Blancos-y-Negros.aspx"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Consultar fuente oficial
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Ministerio de Cultura de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Ministerio de Cultura. (s.f.). Conocimientos y técnicas tradicionales asociadas
+                                        con el barniz de Pasto mopa-mopa (Putumayo y Nariño). Patrimonio Cultural
+                                        Inmaterial.
+                                    </div>
+                                    <a href="https://patrimonio.mincultura.gov.co/legislacion/Paginas/Barniz-de-pasto-mopa-mopa.aspx"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Consultar fuente oficial
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Ministerio de Cultura de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Ministerio de Cultura. (s.f.). <em>Fiesta de San Francisco de Asís en Quibdó
+                                            (Colombia)</em>. Patrimonio Cultural Inmaterial.
+                                    </div>
+                                    <a href="http://patrimonio.mincultura.gov.co/legislacion/Paginas/Fiesta-de-San-Francisco-de-As%C3%ADs-en-Quibd%C3%B3-(Colombia).aspx"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Consultar fuente oficial
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Ministerio de Cultura de Colombia
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Investigaciones Académicas -->
+                        <div class="reference-category">
+                            <h3 class="category-title">
+                                <span class="category-icon">🎓</span>
+                                Investigaciones Académicas
+                            </h3>
+                            <ul class="reference-list">
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Ortiz, J. A. (2021). Iniciativas de ecoturismo en Mocoa, Putumayo: Un estudio de
+                                        caso múltiple (Tesis de maestría). Universidad de los Andes, Bogotá.
+                                    </div>
+                                    <a href="https://repositorio.uniandes.edu.co/bitstreams/3ae4548e-0461-47a9-bb4a-ffdd07442eb2/download"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Acceder al repositorio
+                                    </a>
+                                    <div class="reference-meta">
+                                        Tesis de Maestría - Universidad de los Andes
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Valderrama, R. (2021). Tradición de barniz de Pasto mopa-mopa: conocimientos y
+                                        técnicas tradicionales asociadas con el barniz de Pasto mopa-mopa en Putumayo y
+                                        Nariño. <em>Boletín OPCA</em>, (19). Observatorio de Patrimonio Cultural y
+                                        Arqueológico, Universidad de los Andes.
+                                    </div>
+                                    <a href="https://cienciassociales.uniandes.edu.co/opca/articulo/tradicion-de-barniz-de-pasto-mopa-mopa-conocimientos-y-tecnicas-tradicionales-asociadas-con-el-barniz-de-pasto-mopa-mopa-en-putumayo-y-narino/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Leer artículo completo
+                                    </a>
+                                    <div class="reference-meta">
+                                        Artículo científico - Universidad de los Andes
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Parques Nacionales -->
+                        <div class="reference-category">
+                            <h3 class="category-title">
+                                <span class="category-icon">🌿</span>
+                                Parques Nacionales y Áreas Protegidas
+                            </h3>
+                            <ul class="reference-list">
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). <em>Parque Nacional Natural
+                                            Cueva de los Guácharos</em>.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-cueva-de-los-guacharos/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). Parque Nacional Natural
+                                        Farallones de Cali.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-farallones-de-cali/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). <em>Parque Nacional Natural
+                                            Gorgona</em>.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-gorgona/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). Parque Nacional Natural Los
+                                        Katíos.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-los-katios/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). <em>Parque Nacional Natural La
+                                            Paya</em>.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-la-paya/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        Parques Nacionales Naturales de Colombia. (s.f.). Parque Nacional Natural Utría.
+                                    </div>
+                                    <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-utria/"
+                                        class="reference-link" target="_blank" rel="noopener noreferrer">
+                                        Información oficial del parque
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Parques Nacionales Naturales de Colombia
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- UNESCO y Patrimonio Mundial -->
+                        <div class="reference-category">
+                            <h3 class="category-title">
+                                <span class="category-icon">🌍</span>
+                                Patrimonio Mundial UNESCO
+                            </h3>
+                            <ul class="reference-list">
+                                <li class="reference-item">
+                                    <div class="reference-text">
+                                        UNESCO World Heritage Centre. (2018). <em>Chiribiquete National Park – "The
+                                            Maloca of the Jaguar"</em>.
+                                    </div>
+                                    <a href="https://whc.unesco.org/en/list/1174" class="reference-link" target="_blank"
+                                        rel="noopener noreferrer">
+                                        Sitio oficial UNESCO
+                                    </a>
+                                    <div class="reference-meta">
+                                        Fuente: Centro del Patrimonio Mundial de la UNESCO
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Créditos de Imágenes -->
+                        <div class="reference-category">
+                            <h3 class="category-title">
+                                <span class="category-icon">📸</span>
+                                Créditos y Atribuciones de Imágenes
+                            </h3>
+
+                            <!-- Pueblos Coloniales -->
+                            <div class="subcategory">
+                                <h4 class="subcategory-title">Pueblos Coloniales</h4>
+                                <ul class="reference-list">
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            Pedro Felipe. <em>Plaza Central o Plaza Principal - Villa de Leyva, Boyacá,
+                                                Colombia</em>.
+                                        </div>
+                                        <a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Plaza_Central_o_Plaza_Principal—_Villa_de_Leyva%2C_Boyacá%2C_Colombia.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Wikipedia Commons
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Calle colonial en Barichara, Santander</em>.
+                                        </div>
+                                        <a href="https://cotelcosantander.org/wp-content/uploads/2024/09/barichara_calle_colonial.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Cotelco Santander
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Vista del pueblo colonial de Guane</em>.
+                                        </div>
+                                        <a href="https://thumbs.dreamstime.com/b/colombia-pueblo-colonial-de-guane-90805691.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Dreamstime (Imagen de stock)
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Imagen de Monguí, Boyacá</em>.
+                                        </div>
+                                        <a href="https://www.cronista.com/files/image/1045/1045259/67785412bf465_728_418!.jpg?s=c616347c182eb12c19706ccb347011e3&d=1735939093"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: El Cronista (Argentina)
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Fachadas coloridas y artesanías en Ráquira</em>.
+                                        </div>
+                                        <a href="https://static.caribbeannewsdigital.com/cdn/ff/WGft9e24ktDgJR9yFHSSdzAIkO3EPMFsEv-sS6WNyaM/1707784886/public/2020-06/ráquira%201.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Caribbean News Digital
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Parque principal de Zipaquirá</em>.
+                                        </div>
+                                        <a href="https://www.zipaquira.travel/wp-content/uploads/2022/02/parque-principal.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Zipaquira.travel
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Regiones Naturales -->
+                            <div class="subcategory">
+                                <h4 class="subcategory-title">Regiones Naturales</h4>
+                                <ul class="reference-list">
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Región del Pacífico (Colombia)</em>.
+                                        </div>
+                                        <a href="https://es.wikipedia.org/wiki/Región_del_Pacífico_(Colombia)#/media/Archivo:Océano_pacifico_en_el_Choco,_Colombia.jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Wikipedia Commons
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>La Candelaria, Bogotá, Colombia</em>.
+                                        </div>
+                                        <a href="https://commons.m.wikimedia.org/wiki/File:La_Candelaria,_Bogota,_Colombia_(5812845820).jpg"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver imagen original
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Wikipedia Commons
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            <em>Parque Nacional Natural Tayrona</em>.
+                                        </div>
+                                        <a href="https://es.m.wikipedia.org/wiki/Parque_nacional_natural_Tayrona"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver información
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Wikipedia
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Fuentes Adicionales de Información -->
+                            <div class="subcategory">
+                                <h4 class="subcategory-title">Fuentes Adicionales de Información</h4>
+                                <ul class="reference-list">
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            Regiones Naturales Colombia. <em>Clima de la Región Pacífica</em>.
+                                        </div>
+                                        <a href="https://regionesnaturalescolombia.com/pacifica/clima-de-la-region-pacifica/"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver información
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: regionesnaturalescolombia.com
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            Parques Nacionales Naturales de Colombia. <em>Los Parques Nacionales que
+                                                debes conocer en el Pacífico Colombiano</em>.
+                                        </div>
+                                        <a href="https://www.parquesnacionales.gov.co/sala-prensa/noticias/los-parques-nacionales-que-debes-conocer-en-el-pacifico-colombiano/"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver información
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: Parques Nacionales Naturales de Colombia
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            Corredores Turísticos. <em>Corredor Turístico de Antioquia y Chocó</em>.
+                                        </div>
+                                        <a href="https://corredoresturisticosdotblog.wordpress.com/2017/11/07/corredor-turistico-de-antioquia-y-choco/"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver información
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: corredoresturisticosdotblog.wordpress.com
+                                        </div>
+                                    </li>
+
+                                    <li class="reference-item">
+                                        <div class="reference-text">
+                                            LACGEO. <em>Seaflower Biosphere Reserve Colombia</em>.
+                                        </div>
+                                        <a href="https://lacgeo.com/seaflower-biosphere-reserve-colombia"
+                                            class="reference-link" target="_blank" rel="noopener noreferrer">
+                                            Ver información
+                                        </a>
+                                        <div class="reference-meta">
+                                            Fuente: lacgeo.com
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="citation-note">
+                            <h3>⚠️ Nota Importante</h3>
+                            <p>Todas las fuentes citadas son oficiales y de carácter académico. Se recomienda verificar
+                                la disponibilidad de los enlaces, ya que las páginas web institucionales pueden sufrir
+                                cambios o actualizaciones. Este material ha sido recopilado con fines exclusivamente
+                                educativos y de investigación académica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="navigation-section" style="background-color: var(--color-background-alt); padding: 3rem 0;">
+            <div class="container">
+                <div class="resource-navigation">
+                    <h3 style="text-align: center; margin-bottom: 2rem; color: var(--color-primary);">Otros Recursos
+                    </h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div class="resource-nav-card">
+                            <h4>Fuentes de Información</h4>
+                            <p>Instituciones y organismos consultados</p>
+                            <a href="fuentes.html" class="btn-secondary">Ver Fuentes</a>
+                        </div>
+                        <div class="resource-nav-card">
+                            <h4>Bibliografía</h4>
+                            <p>Referencias bibliográficas académicas</p>
+                            <a href="bibliografias.html" class="btn-secondary">Ver Bibliografía</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines
+                            académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="bibliografias.html">Bibliografía</a></li>
+                        <li><a href="fuentes.html">Fuentes de información</a></li>
+                        <li><a href="referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Script para el menú móvil
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function () {
+                    navMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+
+            // Animaciones al hacer scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+<style>
+    .resources-section {
+        padding: 4rem 0;
+    }
+
+    .bibliography-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .bibliography-intro {
+        background-color: var(--color-background-alt);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .bibliography-categories {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .bibliography-category {
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .bibliography-category h3 {
+        color: var(--color-primary);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--color-secondary);
+    }
+
+    .bibliography-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .bibliography-item {
+        padding: 1rem;
+        background-color: var(--color-background-alt);
+        border-radius: var(--border-radius);
+        border-left: 4px solid var(--color-accent);
+    }
+
+    .bibliography-item p {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .bibliography-note {
+        margin-top: 3rem;
+        text-align: center;
+    }
+
+    .resource-nav-card {
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .resource-nav-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .resource-nav-card h4 {
+        color: var(--color-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .resource-nav-card p {
+        color: var(--color-text-light);
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .bibliography-category {
+            padding: 1.5rem;
+        }
+        
+        .bibliography-intro {
+            padding: 1.5rem;
+        }
+    }
+</style>
+</body>
+
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredores Turísticos de Colombia - Proyecto Universitario</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#mapa">Explorar</a></li>
+                    <li><a href="#regiones">Regiones</a></li>
+                    <li><a href="corredores/andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="corredores/sur.html">Corredor del Sur</a>
+                            <a href="corredores/pacifico.html">Corredor del Pacífico</a>
+                            <a href="corredores/andino.html">Corredor Andino</a>
+                            <a href="corredores/caribe.html">Corredor del Caribe</a>
+                            <a href="corredores/sea_flower.html">Corredor Sea Flower</a>
+                            <a href="corredores/antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredores/corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <!-- Video de fondo de YouTube -->
+            <div class="video-background">
+                <div id="youtube-player"></div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <h2 class="animate-on-scroll">Descubre la Magia de Colombia</h2>
+                    <p class="animate-on-scroll">Un viaje a través de los más espectaculares corredores turísticos, donde la naturaleza, cultura y tradición se entrelazan para crear experiencias inolvidables.</p>
+                    <div class="project-badge animate-on-scroll">
+                        <span>Descubre como recorrer Colombia</span>
+                    </div>
+                    <a href="#mapa" class="btn animate-on-scroll">Explorar Corredores</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="mapa" class="map-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Corredores Turísticos de Colombia</h2>
+                <p class="section-subtitle animate-on-scroll">Selecciona una región para descubrir sus maravillas</p>
+            </div>
+            
+            <div class="map-wrapper" style="overflow: visible; width: 100%; padding: 0 20px;">
+                <div class="map-container animate-on-scroll" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; margin-left: -80px;">
+                    <div id="map-container" style="width: 65%; margin: 0 30px 0 -90px; overflow: visible;">
+                        <div id="map" style="width: 100%; height: 100%;"></div>
+                    </div>
+                    <div class="map-info">
+                        <div id="region-info">
+                            <h3>Aquí puedes ver todo el hermoso mapa de Colombia</h3>
+                            <p>Explora cada región para descubrir sus maravillas turísticas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="regiones" class="featured-regions">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Regiones Destacadas</h2>
+                
+                <div class="region-cards">
+                    <div class="region-card animate-on-scroll" data-region="andina">
+                        <div class="region-image">
+                            <img src="img/regiones/Andina/andina 1.jpg" alt="Paisaje de la Región Andina">
+                        </div>
+                        <div class="region-content">
+                            <h3>Región Andina</h3>
+                            <p>Descubre la diversidad cultural y natural de la cordillera de los Andes, con ciudades vibrantes y paisajes impresionantes.</p>
+                            <a href="regiones/andina.html" class="btn-secondary">Explorar</a>
+                        </div>
+                    </div>
+                    
+                    <div class="region-card animate-on-scroll" data-region="caribe">
+                        <div class="region-image">
+                            <img src="img/regiones/Caribe/caribe 1.jpg" alt="Paisaje de la Región Caribe">
+                        </div>
+                        <div class="region-content">
+                            <h3>Región Caribe</h3>
+                            <p>Sumérgete en la alegría de las playas paradisíacas, la música contagiosa y la rica gastronomía costera.</p>
+                            <a href="regiones/caribe.html" class="btn-secondary">Explorar</a>
+                        </div>
+                    </div>
+                    
+                    <div class="region-card animate-on-scroll" data-region="pacifica">
+                        <div class="region-image">
+                            <img src="img/regiones/Pacifica/pacifico 1.jpg" alt="Paisaje de la Región Pacífica">
+                        </div>
+                        <div class="region-content">
+                            <h3>Región Pacífica</h3>
+                            <p>Explora la exuberante biodiversidad, las selvas húmedas y la rica herencia cultural afrocolombiana.</p>
+                            <a href="regiones/pacifica.html" class="btn-secondary">Explorar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tour" class="tour-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Ruta Sugerida: Explorando Colombia en 7 Días</h2>
+                <div class="info-badge animate-on-scroll">
+                    <span>Información académica con fines educativos</span>
+                </div>
+                <div class="tour-content animate-on-scroll">
+                    <div class="tour-info">
+                        <div class="tour-detail">
+                            <span class="icon">🌎</span>
+                            <div>
+                                <h4>Regiones</h4>
+                                <p>Andina – Caribe – Pacífica</p>
+                            </div>
+                        </div>
+                        <div class="tour-detail">
+                            <span class="icon">⏱️</span>
+                            <div>
+                                <h4>Duración</h4>
+                                <p>7 días / 6 noches</p>
+                            </div>
+                        </div>
+                        <div class="tour-detail">
+                            <span class="icon">🧭</span>
+                            <div>
+                                <h4>Experiencia</h4>
+                                <p>Ecoturismo, espiritualidad, cultura ancestral, naturaleza</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-itinerary">
+                        <h3>Itinerario Sugerido</h3>
+                        <ul class="timeline">
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 1</h4>
+                                    <p>Bogotá - Recorrido por La Candelaria y Monserrate (Andina)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 2</h4>
+                                    <p>Medellín - Comuna 13 y Parque Arví (Andina)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 3</h4>
+                                    <p>Eje Cafetero - Valle del Cocora y Salento (Andina)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 4</h4>
+                                    <p>Cartagena - Ciudad Amurallada y Getsemaní (Caribe)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 5</h4>
+                                    <p>Santa Marta - Parque Tayrona (Caribe)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 6</h4>
+                                    <p>Cali - Tour de Salsa y Gastronomía (Pacífica)</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="timeline-content">
+                                    <h4>Día 7</h4>
+                                    <p>Bahía Solano - Avistamiento de ballenas (Pacífica)</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="tour-cta animate-on-scroll">
+                    <a href="#contacto" class="btn">Más Información</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts para el mapa de Datamaps -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.8/datamaps.col.js"></script>
+    <script src="js/colombia_map.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Script para el video de YouTube como fondo -->
+    <script>
+        // Cargar la API de YouTube IFrame
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        // Variable para el reproductor de YouTube
+        var player;
+        
+        // Función llamada automáticamente por la API de YouTube cuando está lista
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                videoId: 'gU5AYz8x0YU', // ID del video de YouTube
+                playerVars: {
+                    autoplay: 1,        // Reproducción automática
+                    controls: 0,        // Sin controles
+                    showinfo: 0,        // Sin información del video
+                    modestbranding: 1,  // Branding mínimo
+                    loop: 1,            // Reproducción en bucle
+                    playlist: 'gU5AYz8x0YU', // Necesario para el bucle
+                    fs: 0,              // Sin botón de pantalla completa
+                    cc_load_policy: 0,  // Sin subtítulos
+                    iv_load_policy: 3,  // Sin anotaciones
+                    autohide: 0,        // Interfaz siempre visible
+                    mute: 1             // Video silenciado (necesario para autoplay)
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        // Función llamada cuando el reproductor está listo
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            // Ajustar el tamaño del reproductor para cubrir toda la sección
+            resizePlayer();
+            // Ajustar el tamaño cuando cambie el tamaño de la ventana
+            window.addEventListener('resize', resizePlayer);
+        }
+        
+        // Función para ajustar el tamaño del reproductor
+        function resizePlayer() {
+            var hero = document.querySelector('.hero');
+            var playerElement = document.querySelector('#youtube-player');
+            if (playerElement) {
+                playerElement.style.width = hero.offsetWidth + 'px';
+                playerElement.style.height = hero.offsetHeight + 200 + 'px'; // Un poco más alto para cubrir bien
+                playerElement.style.position = 'absolute';
+                playerElement.style.top = '50%';
+                playerElement.style.left = '50%';
+                playerElement.style.transform = 'translate(-50%, -50%)';
+            }
+        }
+        
+        // Función llamada cuando cambia el estado del reproductor
+        function onPlayerStateChange(event) {
+            // Si el video termina, reiniciarlo
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo();
+            }
+        }
+    </script>
+</body>
+</html>

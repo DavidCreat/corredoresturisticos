@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor Sea Flower - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../img/regiones/SEA_FLOWER/-sea-flower\ 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f0f8ff;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f0f8ff;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: #0066cc;
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: #003d7a;
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: #0066cc;
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #0066cc;
+        }
+        
+        .timeline-content {
+            background-color: #f0f8ff;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: #003d7a;
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: #003d7a;
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico Sea Flower</h2>
+                    <p>Descubre la reserva de biosfera más grande del Caribe colombiano</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor Sea Flower</h2>
+                <p>El Corredor Sea Flower abarca el Archipiélago de San Andrés, Providencia y Santa Catalina, declarado Reserva de Biosfera por la UNESCO. Este destino único combina la cultura raizal auténtica, ecosistemas marinos extraordinarios y paisajes caribeños paradisíacos en el corazón del Mar Caribe.</p>
+                <p>La región se caracteriza por sus aguas cristalinas en siete colores, arrecifes coralinos, cultura afrocaribeña, arquitectura colonial inglesa y una rica biodiversidad marina. El archipiélago es hogar de la comunidad raizal, descendientes de colonos ingleses, africanos esclavizados y algunos grupos indígenas, creando una identidad cultural única en Colombia.</p>
+                <p>Los visitantes pueden disfrutar de experiencias únicas como buceo en la tercera barrera coralina más grande del mundo, explorar cayos vírgenes, conocer la cultura raizal auténtica, degustar la gastronomía caribeña y relajarse en playas de arena blanca con aguas turquesas que cambian de color según la profundidad.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-sea-flower" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Archipiélago de San Andrés
+                        var map = L.map('map-sea-flower').setView([12.5, -81.7], 9);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor Sea Flower
+                        var sanAndres = L.marker([12.5847, -81.7006]).addTo(map)
+                            .bindPopup('<b>San Andrés</b><br>Isla principal del archipiélago, famosa por su mar de siete colores y cultura raizal.');
+                        
+                        var providencia = L.marker([13.3569, -81.3742]).addTo(map)
+                            .bindPopup('<b>Providencia</b><br>Isla montañosa con el mejor buceo del Caribe y cultura raizal más preservada.');
+                        
+                        var santaCatalina = L.marker([13.3833, -81.3667]).addTo(map)
+                            .bindPopup('<b>Santa Catalina</b><br>Pequeña isla conectada a Providencia, refugio de piratas en el pasado.');
+                        
+                        var johnnyKey = L.marker([12.5464, -81.7653]).addTo(map)
+                            .bindPopup('<b>Johnny Key</b><br>Pequeño cayo con playas vírgenes y aguas cristalinas.');
+                        
+                        var haynesKey = L.marker([12.5508, -81.7725]).addTo(map)
+                            .bindPopup('<b>Haynes Key</b><br>Cayo natural perfecto para relajación y snorkeling.');
+                        
+                        var roncador = L.marker([13.5333, -80.0667]).addTo(map)
+                            .bindPopup('<b>Banco Roncador</b><br>Importante zona de arrecifes coralinos y biodiversidad marina.');
+                        
+                        var serrana = L.marker([14.3000, -80.2333]).addTo(map)
+                            .bindPopup('<b>Banco Serrana</b><br>Área marina protegida con ecosistemas únicos del Caribe.');
+                        
+                        var quitaSueno = L.marker([14.4833, -81.1833]).addTo(map)
+                            .bindPopup('<b>Banco Quitasueño</b><br>Zona de arrecifes y importante área de pesca artesanal.');
+                        
+                        // Delimitar aproximadamente el Corredor Sea Flower
+                        var corridorSeaFlower = L.polygon([
+                            [14.8, -82.0],  // Norte
+                            [14.8, -79.5],  // Noreste
+                            [11.5, -79.5],  // Sureste
+                            [11.5, -82.0],  // Suroeste
+                        ], {
+                            color: '#0066cc',
+                            fillColor: '#0066cc',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor San Andrés Clásico</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Recorrido tradicional por la isla principal, incluyendo sus playas más famosas, sitios culturales y el centro comercial libre de impuestos.</p>
+                            <ul>
+                                <li>Incluye Playa Spratt Bight, La Loma, San Luis y Punta Norte.</li>
+                                <li>Experiencia completa de compras duty free y gastronomía raizal.</li>
+                                <li><strong>Atracciones principales:</strong> Hoyo Soplador, Casa Museo Isleña, Acuario Mundo Marino, West View, Piscina Natural.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Cayos y Arrecifes</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta acuática que conecta los cayos cercanos a San Andrés, ideal para actividades náuticas y contemplación de la vida marina.</p>
+                            <ul>
+                                <li>Abarca Johnny Key, Haynes Key, Acuario y Piscina Natural.</li>
+                                <li>Especializado en snorkeling, buceo recreativo y relajación en playas vírgenes.</li>
+                                <li><strong>Atracciones principales:</strong> Arrecifes coralinos, mantarrayas, peces tropicales, aguas cristalinas, playa de arena blanca.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Providencia Auténtica</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Experiencia cultural y natural en Providencia, la isla con mayor autenticidad raizal y mejores sitios de buceo del archipiélago.</p>
+                            <ul>
+                                <li>Incluye Old Providence, Bottom House, Lazy Hill y Maracaibo.</li>
+                                <li>Conserva la cultura raizal más pura y tiene los mejores arrecifes para buceo.</li>
+                                <li><strong>Atracciones principales:</strong> Pico Natural, Crab Key, Manzanillo, Iglesia Bautista, Casa de la Cultura.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Santa Catalina Histórica</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Pequeña isla con gran historia pirata, conectada a Providencia por el puente de los enamorados.</p>
+                            <ul>
+                                <li>Antigua guarida del pirata Henry Morgan en el siglo XVII.</li>
+                                <li>Ideal para caminatas históricas y observación de aves marinas.</li>
+                                <li><strong>Atracciones principales:</strong> Fuerte Warwick, Morgan's Head, Puente de los Enamorados, Playa Fort Bay.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Buceo Profesional</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Ruta especializada para buzos certificados que abarca los mejores sitios de buceo profundo del Caribe occidental.</p>
+                            <ul>
+                                <li>Incluye Blue Wall, Felipe's Place, Tete's Place y Black Coral.</li>
+                                <li>Hogar de la tercera barrera coralina más grande del mundo.</li>
+                                <li><strong>Atracciones principales:</strong> Coral negro, tiburones nodriza, tortugas carey, peces ángel, formaciones coralinas únicas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Cultural Raizal</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Experiencia inmersiva en la cultura raizal auténtica, incluyendo música, gastronomía, tradiciones y espiritualidad.</p>
+                            <ul>
+                                <li>Incluye casas tradicionales, iglesias bautistas, centros culturales y festivales.</li>
+                                <li>Conocimiento de la lengua criolla, tradiciones orales y medicina ancestral.</li>
+                                <li><strong>Atracciones principales:</strong> Festival de la Independencia, Green Moon Festival, Casas sobre pilotes, Cocina raizal tradicional.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Paraíso Caribeño Sea Flower</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🏝️</div>
+                        <div class="route-details">
+                            <h4>Ruta Sea Flower Completa</h4>
+                            <p>8 días explorando el archipiélago, su cultura raizal y ecosistemas marinos únicos</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1: Llegada a San Andrés</h4>
+                                <p>Llegada al aeropuerto Gustavo Rojas Pinilla. Recorrido panorámico por la isla incluyendo el Hoyo Soplador, La Loma y Punta Norte. Atardecer en West View con degustación de pescado frito y patacones. Alojamiento en hotel frente al mar.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 2: Cayos y Mar de Siete Colores</h4>
+                                <p>Excursión en lancha a Johnny Key y Haynes Key. Snorkeling en el Acuario Natural y relajación en la Piscina Natural. Almuerzo típico en Johnny Key con langosta fresca. Tarde libre para compras duty free en el centro comercial.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Cultura Raizal y Tradiciones</h4>
+                                <p>Visita a la Casa Museo Isleña para conocer la cultura raizal. Recorrido por San Luis visitando casas tradicionales sobre pilotes. Almuerzo con familia raizal incluyendo rondón y dumplings. Tarde de música calypso y bailes tradicionales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Vuelo a Providencia</h4>
+                                <p>Vuelo matutino a Providencia (20 minutos). Instalación en posada familiar. Ascenso al Pico Natural para vistas panorámicas de 360 grados. Tarde explorando Lazy Hill y Bottom House con guía local raizal.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Santa Catalina y Historia Pirata</h4>
+                                <p>Caminata hasta Santa Catalina cruzando el Puente de los Enamorados. Exploración del Fuerte Warwick y Morgan's Head, antiguos refugios piratas. Snorkeling en Fort Bay. Almuerzo en Providencia con cangrejo negro y fish & festival.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 6: Buceo y Vida Marina</h4>
+                                <p>Jornada completa de buceo en los mejores arrecifes del Caribe. Inmersiones en Blue Wall y Felipe's Place (para buzos certificados) o snorkeling en Crab Key y Manzanillo. Observación de coral negro, tortugas carey y peces tropicales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 7: Regreso a San Andrés</h4>
+                                <p>Vuelo de regreso a San Andrés. Tarde libre para actividades pendientes: compras, relax en Playa Spratt Bight o visita al Acuario Mundo Marino. Cena de despedida con música vallenato y ron punch típico.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 8: Partida</h4>
+                                <p>Mañana libre para últimas compras o descanso en la playa. Traslado al aeropuerto y vuelo de regreso al continente. Despedida del paraíso caribeño con recuerdos únicos del Sea Flower.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🎒</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Vuelos domésticos San Andrés - Providencia - San Andrés</li>
+                                <li>Alojamiento en hoteles frente al mar y posadas raizales</li>
+                                <li>Excursiones en lancha a cayos y sitios de buceo</li>
+                                <li>Guías especializados en cultura raizal y biología marina</li>
+                                <li>Equipos de snorkeling y buceo recreativo</li>
+                                <li>Experiencias gastronómicas auténticas</li>
+                                <li>Traslados aeropuerto-hotel-aeropuerto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/-sea-flower 1.jpg" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/sea-flower 2.jpg" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/sea-flower 3.jpg" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/sea-flower 4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/sea-flower 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/SEA_FLOWER/sea-flower 6.jpg" alt="Catedral de Sal de Zipaquirá">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

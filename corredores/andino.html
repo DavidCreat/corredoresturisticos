@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor Andino - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Andina/andina 1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico Andino</h2>
+                    <p>Descubre la majestuosidad de los Andes colombianos, sus paisajes, cultura y tradiciones</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor Andino</h2>
+                <p>El Corredor Andino se extiende a través de las tres cordilleras de los Andes colombianos (Occidental, Central y Oriental), abarcando múltiples departamentos y concentrando las principales ciudades del país como Bogotá, Medellín, Cali, Bucaramanga, Manizales, Pereira y Tunja.</p>
+                <p>Esta región es el corazón geográfico, político y económico de Colombia, caracterizada por su diversidad de paisajes que incluyen valles, altiplanos, páramos, lagunas, montañas nevadas y bosques andinos. La Región Andina es conocida por su rica biodiversidad, tradiciones folclóricas como el bambuco, la guabina, el pasillo y el bunde, y una gastronomía diversa que incluye platos emblemáticos como la bandeja paisa y los tamales tolimenses.</p>
+                <p>El Corredor Andino ofrece experiencias únicas para los amantes de la naturaleza, la cultura, la historia y la gastronomía, todo enmarcado en impresionantes paisajes montañosos y una infraestructura que conecta los principales centros urbanos del país.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-andino" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor Andino
+                        var map = L.map('map-andino').setView([5.0, -74.0], 7);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor Andino
+                        var bogota = L.marker([4.6097, -74.0817]).addTo(map)
+                            .bindPopup('<b>Bogotá</b><br>Capital de Colombia y centro económico, político y cultural.');
+                        
+                        var medellin = L.marker([6.2476, -75.5658]).addTo(map)
+                            .bindPopup('<b>Medellín</b><br>Segunda ciudad más importante, conocida como la "Ciudad de la Eterna Primavera".');
+                        
+                        var cali = L.marker([3.4516, -76.5320]).addTo(map)
+                            .bindPopup('<b>Cali</b><br>Capital del Valle del Cauca, conocida como la "Capital de la Salsa".');
+                        
+                        var bucaramanga = L.marker([7.1254, -73.1198]).addTo(map)
+                            .bindPopup('<b>Bucaramanga</b><br>Capital de Santander, conocida como la "Ciudad de los Parques".');
+                        
+                        var ejeCafetero = L.marker([4.8133, -75.6961]).addTo(map)
+                            .bindPopup('<b>Eje Cafetero</b><br>Región cafetera que incluye Manizales, Pereira y Armenia.');
+                        
+                        var villaDeLeiva = L.marker([5.6333, -73.5333]).addTo(map)
+                            .bindPopup('<b>Villa de Leyva</b><br>Pueblo colonial con una de las plazas más grandes de América.');
+                        
+                        var sanAgustin = L.marker([1.8833, -76.2667]).addTo(map)
+                            .bindPopup('<b>San Agustín</b><br>Sitio arqueológico con estatuas precolombinas, Patrimonio de la Humanidad.');
+                        
+                        var cocuy = L.marker([6.4119, -72.4458]).addTo(map)
+                            .bindPopup('<b>Parque Nacional Natural El Cocuy</b><br>Hogar de impresionantes glaciares y picos nevados.');
+                        
+                        // Delimitar aproximadamente el Corredor Andino con un polígono
+                        var corridorAndino = L.polygon([
+                            [8.0, -76.0],  // Norte Antioquia
+                            [8.0, -72.0],  // Norte Santander
+                            [1.0, -72.0],  // Sur Huila
+                            [1.0, -77.0],  // Sur Nariño
+                            [3.0, -77.5],  // Valle del Cauca
+                            [6.0, -77.0]   // Antioquia oeste
+                        ], {
+                            color: '#4caf50',
+                            fillColor: '#4caf50',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Corredores Estratégicos</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Bogotá – Medellín</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Este corredor conecta la capital del país con la segunda ciudad más importante, atravesando el altiplano cundiboyacense, el Magdalena Medio y la cordillera Central.</p>
+                            <ul>
+                                <li>Pasa por Facatativá, La Dorada, Puerto Triunfo y Rionegro.</li>
+                                <li>Es vital para el transporte de mercancías, pasajeros y productos industriales y agrícolas.</li>
+                                <li><strong>Atracciones principales:</strong> Catedral de Sal de Zipaquirá, Hacienda Nápoles, Laguna de Guatavita, Parque Arví.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Bogotá – Cali</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Une Bogotá con el Valle del Cauca, pasando por Ibagué, Armenia, La Línea, y luego hacia Buga y Cali.</p>
+                            <ul>
+                                <li>Incluye el Túnel de La Línea, una de las obras de infraestructura más grandes del país.</li>
+                                <li>Es esencial para el comercio entre el centro del país y el suroccidente.</li>
+                                <li><strong>Atracciones principales:</strong> Jardín Botánico del Quindío, Basílica del Señor de los Milagros en Buga, Parque Nacional Natural Los Nevados, Valle del Cocora.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor del Magdalena Medio</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Recorre el valle del río Magdalena desde Puerto Salgar (Cundinamarca) hasta Barrancabermeja (Santander) y continúa hacia la costa Caribe.</p>
+                            <ul>
+                                <li>Funciona como una columna vertebral para conectar el centro del país con los puertos marítimos.</li>
+                                <li>Tiene gran importancia para el transporte de hidrocarburos, alimentos y materiales de construcción.</li>
+                                <li><strong>Atracciones principales:</strong> Reserva Natural Cañón del Río Claro, Puerto Berrío, Barrancabermeja y su cultura petrolera.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor Bogotá – Bucaramanga – Cúcuta</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Este corredor comunica Bogotá con el nororiente del país.</p>
+                            <ul>
+                                <li>Pasa por Tunja, Duitama, Piedecuesta, Bucaramanga y llega hasta la frontera con Venezuela en Cúcuta.</li>
+                                <li>Es clave para el comercio binacional y la movilidad en los Santanderes.</li>
+                                <li><strong>Atracciones principales:</strong> Villa de Leyva, Parque Nacional del Chicamocha, Barichara, Monumento a Cristo Rey en Cúcuta.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredor del Café (Eje Cafetero)</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Conecta las ciudades de Manizales, Pereira, y Armenia, en el corazón de la zona cafetera.</p>
+                            <ul>
+                                <li>Se interconecta con los corredores hacia Medellín, Bogotá y Cali.</li>
+                                <li>Es fundamental para el turismo, la agroindustria y la exportación de café y flores.</li>
+                                <li><strong>Atracciones principales:</strong> Parque Nacional del Café, Termales de Santa Rosa, Valle del Cocora, Salento, Filandia, Recuca.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Corredores Rurales y Productivos</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>En zonas rurales de Antioquia, Boyacá, Huila, Tolima, Nariño y Cundinamarca, existen corredores menores que conectan fincas productoras.</p>
+                            <ul>
+                                <li>Productos principales: Café, papa, frutas, flores, panela, leche, entre otros.</li>
+                                <li>Estos corredores son fundamentales para garantizar el abastecimiento urbano y permitir el comercio de productos agropecuarios.</li>
+                                <li><strong>Atracciones principales:</strong> Fincas cafeteras, viñedos en Villa de Leyva, cultivos de flores en la Sabana de Bogotá, trapiches paneleros en Cundinamarca y Boyacá.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Tesoros de los Andes Colombianos</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🏔️</div>
+                        <div class="route-details">
+                            <h4>Ruta Andina</h4>
+                            <p>10 días recorriendo los paisajes más impresionantes de los Andes colombianos</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Itinerario Sugerido</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1-2: Bogotá y alrededores</h4>
+                                <p>Llegada a Bogotá, visita al centro histórico de La Candelaria, Museo del Oro, Monserrate y la Catedral de Sal de Zipaquirá. Exploración de la gastronomía local y visita a la Laguna de Guatavita.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3-4: Villa de Leyva y Boyacá</h4>
+                                <p>Traslado a Villa de Leyva, recorrido por su impresionante plaza central y arquitectura colonial. Visita al Convento del Santo Ecce Homo, el Viñedo Aim Karim y el Parque Arqueológico El Infiernito. Excursión al Lago de Tota y Ráquira, pueblo artesanal.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5-6: Santander y el Cañón del Chicamocha</h4>
+                                <p>Viaje a Bucaramanga y visita al Parque Nacional del Chicamocha (Panachi), con su impresionante teleférico. Recorrido por Barichara, considerado uno de los pueblos más bonitos de Colombia, y caminata por el Camino Real hasta Guane.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 7-8: Eje Cafetero</h4>
+                                <p>Traslado al Eje Cafetero, visita al Valle del Cocora con sus emblemáticas palmas de cera. Recorrido por Salento y Filandia, pueblos tradicionales cafeteros. Visita a una finca cafetera para conocer el proceso del café y al Parque Nacional del Café o Parque Panaca.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 9-10: Medellín y alrededores</h4>
+                                <p>Finalización del recorrido en Medellín, visita al Parque Arví, recorrido por la transformación urbana de la ciudad con el Metrocable, Comuna 13 y Parque Explora. Excursión a Guatapé y la Piedra del Peñol, con su impresionante vista panorámica.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Transporte terrestre entre destinos</li>
+                                <li>Alojamiento en hoteles boutique y haciendas tradicionales</li>
+                                <li>Guías especializados en cultura e historia andina</li>
+                                <li>Entradas a parques nacionales y atracciones principales</li>
+                                <li>Experiencias gastronómicas regionales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 1.jpg" alt="Paisaje de la Región Andina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 2.jpg" alt="Bogotá">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 3.jpg" alt="Medellín">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 4.jpg" alt="Eje Cafetero">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 5.jpg" alt="Parque Nacional Natural Los Nevados">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Andina/andina 6.jpg" alt="Catedral de Sal de Zipaquirá">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: proximamente</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
