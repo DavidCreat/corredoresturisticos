@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corredor de la Orinoquía - Corredores Turísticos de Colombia</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="../js/main.js" defer></script>
+    <style>
+        /* Ajuste para el header fijo */
+        body {
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+        
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .corridor-hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../img/regiones/Orinoquia/bioparque.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 100px 0;
+        }
+        
+        .hero-content h2, .hero-content p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos para las secciones */
+        section {
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        
+        .corridor-info {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-map {
+            padding: 3rem 0;
+        }
+        
+        .corridor-attractions {
+            background-color: #f9f9f9;
+            padding: 3rem 0;
+        }
+        
+        .corridor-route {
+            padding: 3rem 0;
+        }
+        
+        /* Estilos para la ruta turística */
+        .route-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .route-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .route-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .route-details {
+            flex: 1;
+        }
+        
+        .route-details h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline li:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--color-secondary);
+        }
+        
+        .timeline-content {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        /* Estilos para las atracciones */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .attraction-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .attraction-title {
+            padding: 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .attraction-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .attraction-content li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Corredores Turísticos</h1>
+                <span>Colombia</span>
+            </div>
+            <nav>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Volver</a></li>
+                    <li><a href="andes_orientales.html">Corredor Andes Orientales</a></li>
+                    <li><a href="../pueblos_patrimonios.html">Pueblos patrimonios</a></li>
+                    <li class="dropdown">
+                        <a href="#corredores">Corredores</a>
+                        <div class="dropdown-content">
+                            <a href="sur.html">Corredor del Sur</a>
+                            <a href="pacifico.html">Corredor del Pacífico</a>
+                            <a href="andino.html">Corredor Andino</a>
+                            <a href="caribe.html">Corredor del Caribe</a>
+                            <a href="sea_flower.html">Corredor Sea Flower</a>
+                            <a href="antioquia_choco.html">Corredor Antioquia y Choco</a>
+                            <a href="corredor_selva.html">Corredor de la Selva</a>
+                            <a href="orinoquia.html">Corredor de la Orinoquía</a>
+                        </div>
+                    </li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="corridor-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Corredor Turístico de la Orinoquía</h2>
+                    <p>Descubre la biodiversidad, cultura indígena y paisajes únicos de los llanos orientales</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="corridor-info">
+            <div class="container">
+                <h2 class="section-title">Sobre el Corredor de la Orinoquía</h2>
+                <p>El corredor turístico de la Orinoquía está conformado por los departamentos de Guainía, Vaupés, Guaviare y Vichada. Esta región es rica en biodiversidad, cultura indígena y paisajes únicos. Su geografía forma una especie de "cruz de San Pedro" que conecta las sábanas con los Llanos y la selva, y limita con Brasil y Venezuela.</p>
+                <p>La región también posee gran valor histórico y arqueológico, con pinturas rupestres y antiguas redes indígenas. Un lugar emblemático es la Estrella Fluvial de Oriente, donde confluyen los ríos Inírida, Guaviare y Atabapo, marcando fronteras y mezclando aguas de distintos colores.</p>
+                <p>Los visitantes pueden disfrutar de experiencias únicas como explorar los Cerros de Mavecure, navegar por ríos que cambian de color, conocer comunidades indígenas ancestrales, y descubrir uno de los conjuntos de arte rupestre más importantes del mundo en la Serranía de La Lindosa.</p>
+            </div>
+        </section>
+        
+        <section class="corridor-map">
+            <div class="container">
+                <h2 class="section-title">Ubicación</h2>
+                <div id="map-orinoquia" style="width: 100%; height: 500px; border-radius: var(--border-radius);"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Inicializar el mapa centrado en el Corredor de la Orinoquía
+                        var map = L.map('map-orinoquia').setView([2.5, -70.5], 6);
+                        
+                        // Añadir capa de mapa base de OpenStreetMap
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+                        
+                        // Añadir marcadores para los principales destinos del Corredor de la Orinoquía
+                        var sanJoseGuaviare = L.marker([2.5674, -72.6363]).addTo(map)
+                            .bindPopup('<b>San José del Guaviare</b><br>Puerta de entrada a la selva amazónica y punto de partida hacia la Serranía de La Lindosa.');
+                        
+                        var mitu = L.marker([1.2581, -70.1735]).addTo(map)
+                            .bindPopup('<b>Mitú</b><br>Capital del Vaupés, centro de cultura indígena y biodiversidad selvática.');
+                        
+                        var inirida = L.marker([3.8653, -67.9063]).addTo(map)
+                            .bindPopup('<b>Inírida</b><br>Capital de Guainía, famosa por los Cerros de Mavecure y la flor de Inírida.');
+                        
+                        var puertoCarreno = L.marker([6.1890, -67.4859]).addTo(map)
+                            .bindPopup('<b>Puerto Carreño</b><br>Capital de Vichada, punto de encuentro de los ríos Meta y Orinoco.');
+                        
+                        var taraira = L.marker([1.1667, -69.5167]).addTo(map)
+                            .bindPopup('<b>Taraira</b><br>Destino remoto en el Vaupés para aventuras fluviales y culturales.');
+                        
+                        var cerrosMavecure = L.marker([3.7000, -67.7500]).addTo(map)
+                            .bindPopup('<b>Cerros de Mavecure</b><br>Tres monolitos sagrados considerados lugares sagrados por los pueblos indígenas.');
+                        
+                        var serraniLindosa = L.marker([2.2500, -72.3000]).addTo(map)
+                            .bindPopup('<b>Serranía de La Lindosa</b><br>Sitio arqueológico con pinturas rupestres y formaciones rocosas únicas.');
+                        
+                        // Delimitar aproximadamente el Corredor de la Orinoquía con un polígono
+                        var corridorOrinoquia = L.polygon([
+                            [6.5, -67.0],  // Norte Vichada
+                            [4.5, -66.0],  // Noreste Guainía
+                            [0.5, -68.0],  // Sur Vaupés
+                            [1.5, -74.0],  // Suroeste Guaviare
+                            [3.5, -74.5],  // Oeste Guaviare
+                            [6.0, -70.0]   // Noroeste Vichada
+                        ], {
+                            color: '#228B22',
+                            fillColor: '#228B22',
+                            fillOpacity: 0.2
+                        }).addTo(map);
+                    });
+                </script>
+            </div>
+        </section>
+        
+        <section class="corridor-attractions">
+            <div class="container">
+                <h2 class="section-title">Patrimonio y Atracciones</h2>
+                
+                <div class="attraction-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonio Cultural Material</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>La Orinoquía alberga importantes manifestaciones arquitectónicas y monumentos que reflejan su historia y tradiciones.</p>
+                            <ul>
+                                <li><strong>Catedral de San José del Guaviare:</strong> Iglesia colonial del siglo XX, ejemplo de arquitectura religiosa regional.</li>
+                                <li><strong>Monumento de Arpa y Guitarra Llanera:</strong> Representación tangible de la música tradicional de los llanos, Patrimonio Cultural Inmaterial de la Nación.</li>
+                                <li><strong>Cerro Azul:</strong> Sitio arqueológico con vasta colección de pinturas rupestres prehispánicas.</li>
+                                <li><strong>El Cerro de la Bandera:</strong> Sitio histórico en Puerto Carreño con vistas al encuentro de los ríos Meta, Bita y Orinoco.</li>
+                                <li><strong>Malocas tradicionales indígenas:</strong> Construcciones artesanales de palma para eventos culturales.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonio Cultural Inmaterial</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Las tradiciones vivas de la Orinoquía incluyen expresiones musicales, gastronómicas y ceremoniales únicas.</p>
+                            <ul>
+                                <li><strong>Los cantos de trabajo del llano:</strong> Declarados por la UNESCO, expresiones orales ligadas a la ganadería.</li>
+                                <li><strong>Joropo:</strong> Género musical y dancístico emblemático caracterizado por el arpa vibrante.</li>
+                                <li><strong>Gastronomía típica Llanera:</strong> Carne a la llanera, sancocho de gallina criolla, chicha de arroz.</li>
+                                <li><strong>Tradiciones orales y mitos:</strong> Leyendas como la bola del fuego del imaginario colectivo llanero.</li>
+                                <li><strong>Ceremonia del Yuruparí:</strong> Ritual de iniciación masculina en las comunidades indígenas del Vaupés.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Patrimonio Natural</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>La Orinoquía posee ecosistemas únicos y formaciones geológicas extraordinarias reconocidas mundialmente.</p>
+                            <ul>
+                                <li><strong>Cerros de Mavecure:</strong> Tres monolitos sagrados para los pueblos indígenas Curripaco, Puinave y Tucano.</li>
+                                <li><strong>Parque Nacional Natural Chiribiquete:</strong> Patrimonio Mixto de la Humanidad por la UNESCO.</li>
+                                <li><strong>Serranía de La Lindosa:</strong> La puerta de Orión, laguna Negra y ciudad de Piedra.</li>
+                                <li><strong>Bioparque Túneles Naturales:</strong> Estructuras geológicas esculpidas por millones de años.</li>
+                                <li><strong>Parque Nacional Natural El Tuparro:</strong> Extensas sabanas, ríos y gran diversidad de flora y fauna.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Jardín de la Flor de Inírida</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Espacio protegido dedicado a la conservación de una especie única en el mundo.</p>
+                            <ul>
+                                <li>Flor endémica que solo crece en esta zona del país.</li>
+                                <li>Conocida como la "flor eterna" por su resistencia.</li>
+                                <li>Símbolo de la biodiversidad de la región Orinoquía.</li>
+                                <li>Espacio ideal para la observación y fotografía de especies nativas.</li>
+                                <li>Centro de educación ambiental sobre ecosistemas únicos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Reserva Natural Nukak Tunahi</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Hogar de la comunidad indígena Nukak y santuario de biodiversidad amazónica.</p>
+                            <ul>
+                                <li>Habitat de especies endémicas y en peligro de extinción.</li>
+                                <li>Territorio ancestral de la comunidad indígena Nukak.</li>
+                                <li>Punto de conexión entre ecosistemas amazónicos y llaneros.</li>
+                                <li>Importante para la investigación científica y conservación.</li>
+                                <li>Experiencias de turismo comunitario responsable.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-title">
+                            <h3>Estrella Fluvial de Oriente</h3>
+                        </div>
+                        <div class="attraction-content">
+                            <p>Confluencia única donde se encuentran los ríos Inírida, Guaviare y Atabapo, creando un espectáculo natural.</p>
+                            <ul>
+                                <li>Punto donde se mezclan aguas de distintos colores.</li>
+                                <li>Marca fronteras naturales entre países.</li>
+                                <li>Importante para la navegación y el comercio regional.</li>
+                                <li>Sitio de gran valor geográfico y simbólico.</li>
+                                <li>Ideal para actividades de avistamiento y fotografía.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="corridor-route">
+            <div class="container">
+                <h2 class="section-title">Ruta Sugerida: Aventura en la Orinoquía</h2>
+                
+                <div class="route-card">
+                    <div class="route-header">
+                        <div class="route-icon">🌿</div>
+                        <div class="route-details">
+                            <h4>Ruta Orinoquía Selvática</h4>
+                            <p>5 días explorando la biodiversidad, cultura indígena y paisajes únicos de los llanos orientales</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Actividades Sugeridas</h3>
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 1: Llegada a San José del Guaviare</h4>
+                                <p>12:00pm vuelo desde Cúcuta a San José del Guaviare (2:40 minutos). Traslado al alojamiento. Tarde: Excursión a la Ciudad de Piedra, impresionante conjunto de formaciones rocosas con pinturas rupestres. Noche: Cena y alojamiento. Posible actividad adicional: Visita a los túneles naturales.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 2: Vuelo a Mitú y Exploración Selvática</h4>
+                                <p>10:00am Vuelo desde San José del Guaviare a Mitú (Vaupés) - 2 horas de vuelo, llegada 12:00pm. 3:00pm Instalación en alojamiento. Caminata introductoria por los alrededores de Mitú, conociendo flora y fauna local. Posibilidad de visitar comunidad indígena cercana para aprender sobre su cultura. Noche: Cena y alojamiento en Mitú.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 3: Aventura Fluvial hacia Taraira</h4>
+                                <p>10:00am Traslado en lancha rápida por el río Vaupés hacia Taraira - 6 horas de navegación. Día de navegación disfrutando del paisaje selvático. 4:00pm Llegada al destino. Instalación en alojamiento básico (puede ser hospedaje comunitario). Noche: Cena y alojamiento en Taraira.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 4: Regreso a Mitú y Vuelo a Inírida</h4>
+                                <p>8:00am Regreso en lancha rápida a Mitú, llegada 1:00pm. Tarde: Vuelo desde Mitú a Inírida (Guainía) - 3 horas de duración. Noche: Cena y alojamiento en Inírida.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-content">
+                                <h4>Día 5: Exploración en Inírida y Regreso</h4>
+                                <p>Mañana: Visita a los Cerros de Mavecure (requiere transporte fluvial y caminata). Disfruta del paisaje único de estas imponentes formaciones rocosas consideradas sagradas por los pueblos indígenas. Tarde: Traslado al aeropuerto para tomar el vuelo de regreso a Cúcuta.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="route-header">
+                        <div class="route-icon">🧳</div>
+                        <div class="route-details">
+                            <h4>Incluye</h4>
+                            <ul>
+                                <li>Vuelos internos entre destinos</li>
+                                <li>Transporte fluvial en lanchas rápidas</li>
+                                <li>Alojamiento en hospedajes locales y comunitarios</li>
+                                <li>Guías especializados en flora, fauna y cultura indígena</li>
+                                <li>Entradas a sitios arqueológicos y naturales</li>
+                                <li>Experiencias gastronómicas regionales típicas</li>
+                                <li>Actividades de turismo comunitario responsable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="region-gallery">
+            <div class="container">
+                <h2 class="section-title">Galería de Imágenes</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/Reserva_Nukak_.jpg" alt="Reserva Natural Nukak">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/bioparque.jpg" alt="Bioparque Los Ocarros">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/cerros-de-mavecure.jpg" alt="Cerros de Mavecure">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/chiribiquete_1.jpg" alt="Serranía de Chiribiquete">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/lindosa.jpg" alt="Caño Cristales, Serranía de La Lindosa">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="../img/regiones/Orinoquia/tuparro.jpeg" alt="Parque Nacional Natural El Tuparro">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Corredores Turísticos</h3>
+                    <p>Descubre la belleza y diversidad de Colombia a través de nuestros corredores turísticos.</p>
+                    <div class="project-info">
+                        <p><strong>Proyecto Universitario</strong> - Este sitio web fue desarrollado con fines académicos y educativos.</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Académico</h4>
+                    <p>Email: est_ai_florez@fesc.edu.co</p>
+                    <p>Programa: Administración Turística y Hotelera</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Recursos</h4>
+                    <ul class="resources-list">
+                        <li><a href="../recursos/bibliografias.html">Bibliografía</a></li>
+                        <li><a href="../recursos/fuentes.html">Fuentes de información</a></li>
+                        <li><a href="../recursos/referencias.html">Referencias académicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Proyecto Académico - Corredores Turísticos de Colombia. Todos los derechos reservados.</p>
+                <p style="color: #000000; font-size: 1px; opacity: 0.01; position: absolute; left: -9999px;">@DavidCreat</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
@@ -25,7 +26,6 @@
                 <ul class="nav-menu">
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#mapa">Explorar</a></li>
-                    <li><a href="#regiones">Regiones</a></li>
                     <li><a href="corredores/andes_orientales.html">Corredor Andes Orientales</a></li>
                     <li><a href="pueblos_patrimonios.html">Pueblos patrimonios</a></li>
                     <li class="dropdown">
@@ -36,8 +36,9 @@
                             <a href="corredores/andino.html">Corredor Andino</a>
                             <a href="corredores/caribe.html">Corredor del Caribe</a>
                             <a href="corredores/sea_flower.html">Corredor Sea Flower</a>
-                            <a href="corredores/antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="corredores/antioquia_choco.html">Corredor Antioquia y Choco</a>
                             <a href="corredores/corredor_selva.html">Corredor de la Selva</a>
+                            <a href="corredores/orinoquia.html">Corredor Orinoquia</a>
                         </div>
                     </li>
                     <li><a href="#contacto">Contacto</a></li>
@@ -48,7 +49,6 @@
 
     <main>
         <section id="inicio" class="hero">
-            <!-- Video de fondo de YouTube -->
             <div class="video-background">
                 <div id="youtube-player"></div>
             </div>
@@ -85,129 +85,71 @@
             </div>
         </section>
 
-        <section id="regiones" class="featured-regions">
+        <!-- Sección Andes Orientales -->
+        <section class="featured-section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll">Regiones Destacadas</h2>
-                
-                <div class="region-cards">
-                    <div class="region-card animate-on-scroll" data-region="andina">
-                        <div class="region-image">
-                            <img src="img/regiones/Andina/andina 1.jpg" alt="Paisaje de la Región Andina">
-                        </div>
-                        <div class="region-content">
-                            <h3>Región Andina</h3>
-                            <p>Descubre la diversidad cultural y natural de la cordillera de los Andes, con ciudades vibrantes y paisajes impresionantes.</p>
-                            <a href="regiones/andina.html" class="btn-secondary">Explorar</a>
-                        </div>
-                    </div>
-                    
-                    <div class="region-card animate-on-scroll" data-region="caribe">
-                        <div class="region-image">
-                            <img src="img/regiones/Caribe/caribe 1.jpg" alt="Paisaje de la Región Caribe">
-                        </div>
-                        <div class="region-content">
-                            <h3>Región Caribe</h3>
-                            <p>Sumérgete en la alegría de las playas paradisíacas, la música contagiosa y la rica gastronomía costera.</p>
-                            <a href="regiones/caribe.html" class="btn-secondary">Explorar</a>
-                        </div>
-                    </div>
-                    
-                    <div class="region-card animate-on-scroll" data-region="pacifica">
-                        <div class="region-image">
-                            <img src="img/regiones/Pacifica/pacifico 1.jpg" alt="Paisaje de la Región Pacífica">
-                        </div>
-                        <div class="region-content">
-                            <h3>Región Pacífica</h3>
-                            <p>Explora la exuberante biodiversidad, las selvas húmedas y la rica herencia cultural afrocolombiana.</p>
-                            <a href="regiones/pacifica.html" class="btn-secondary">Explorar</a>
-                        </div>
+                <h2 class="section-title animate-on-scroll">Los Andes Orientales</h2>
+                <div class="andes-content animate-on-scroll">
+                    <p>La región de los Andes Orientales en Colombia es una maravilla geográfica y cultural que abarca los departamentos de Boyacá, Cundinamarca, Norte de Santander, Santander y parte de Meta. Esta cordillera, que se extiende desde el Nudo de Almaguer hasta la Serranía de Perijá, alberga una extraordinaria diversidad de paisajes, desde páramos y nevados hasta valles fértiles y cañones profundos.</p>
+                    <p>Características destacadas:</p>
+                    <ul>
+                        <li>Altitud promedio: 2.500 - 3.500 metros sobre el nivel del mar</li>
+                        <li>Clima: Variado, desde frío páramo hasta templado</li>
+                        <li>Ecosistemas: Páramos, bosques andinos, valles interandinos</li>
+                        <li>Principales atractivos: Parque Nacional Natural El Cocuy, Lago de Tota, Villa de Leyva</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Presentación Narrativa Andes -->
+        <section class="presentation-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Narrativa de los Andes</h2>
+                <div class="presentation-container animate-on-scroll">
+                    <div class="presentation-preview">
+                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vS7qBGhbf34dcKi8hQDeZuxmLnrr45sIwyKt4i_nidLwECfiKL8dqZ0eUp-CIfW0A/pubembed?start=true&loop=true&delayms=3000" frameborder="0" width="640" height="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>                        <a href="archivos/pptx/DiapositivaFESCnarrativa01.pptx" class="btn" download>
+                            <i class="fas fa-download"></i> Descargar Presentación
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="tour" class="tour-section">
+        <!-- Sección Corredor Turístico -->
+        <section class="presentation-section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll">Ruta Sugerida: Explorando Colombia en 7 Días</h2>
-                <div class="info-badge animate-on-scroll">
-                    <span>Información académica con fines educativos</span>
+                <h2 class="section-title animate-on-scroll">Corredor Turístico</h2>
+                <div class="presentation-container animate-on-scroll">
+                    <div class="presentation-preview">
+                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTUQ4yNIsiRPc9erxGSLIZS__bjXJ5iZeFoECfFY4j-h5mWxsy-B_ynZBFKZu2bqg/pubembed?start=true&loop=true&delayms=3000" frameborder="0" width="640" height="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>                        <a href="archivos/pptx/CORREDORTURISTICO.pptx" class="btn" download>
+                            <i class="fas fa-download"></i> Descargar Presentación
+                        </a>
+                    </div>
                 </div>
-                <div class="tour-content animate-on-scroll">
-                    <div class="tour-info">
-                        <div class="tour-detail">
-                            <span class="icon">🌎</span>
-                            <div>
-                                <h4>Regiones</h4>
-                                <p>Andina – Caribe – Pacífica</p>
-                            </div>
-                        </div>
-                        <div class="tour-detail">
-                            <span class="icon">⏱️</span>
-                            <div>
-                                <h4>Duración</h4>
-                                <p>7 días / 6 noches</p>
-                            </div>
-                        </div>
-                        <div class="tour-detail">
-                            <span class="icon">🧭</span>
-                            <div>
-                                <h4>Experiencia</h4>
-                                <p>Ecoturismo, espiritualidad, cultura ancestral, naturaleza</p>
+            </div>
+        </section>
+
+                <!-- Sección Corredor Turístico -->
+                <section class="presentation-section">
+                    <div class="container">
+                        <h2 class="section-title animate-on-scroll">Andes Orientales</h2>
+                        <div class="presentation-container animate-on-scroll">
+                            <div class="presentation-preview">
+                                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRWvI_zyIJtTiq13CFh8BWZQr57vigv8htdjetb_2ZN5ME_FEdbmqAqv7IIFM4rhA/pubembed?start=true&loop=true&delayms=3000" frameborder="0" width="640" height="389" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>                                <a href="archivos/pptx/CORREDORTURISTICO.pptx" class="btn" download>
+                                    <i class="fas fa-download"></i> Descargar Presentación
+                                </a>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="tour-itinerary">
-                        <h3>Itinerario Sugerido</h3>
-                        <ul class="timeline">
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 1</h4>
-                                    <p>Bogotá - Recorrido por La Candelaria y Monserrate (Andina)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 2</h4>
-                                    <p>Medellín - Comuna 13 y Parque Arví (Andina)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 3</h4>
-                                    <p>Eje Cafetero - Valle del Cocora y Salento (Andina)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 4</h4>
-                                    <p>Cartagena - Ciudad Amurallada y Getsemaní (Caribe)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 5</h4>
-                                    <p>Santa Marta - Parque Tayrona (Caribe)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 6</h4>
-                                    <p>Cali - Tour de Salsa y Gastronomía (Pacífica)</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-content">
-                                    <h4>Día 7</h4>
-                                    <p>Bahía Solano - Avistamiento de ballenas (Pacífica)</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="tour-cta animate-on-scroll">
-                    <a href="#contacto" class="btn">Más Información</a>
+                </section>
+
+        <!-- Sección Ruta Cuatro Tesoros -->
+        <section class="tesoros-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Ruta Cuatro Tesoros</h2>
+                <div class="tesoros-image animate-on-scroll">
+                    <img src="archivos/imgs/tesoro.jpeg" alt="Ruta Cuatro Tesoros" class="full-width-image">
                 </div>
             </div>
         </section>
@@ -225,7 +167,7 @@
                 </div>
                 <div class="footer-contact">
                     <h4>Contacto Académico</h4>
-                    <p>Email: proximamente</p>
+                    <p>Email: est_ai_florez@fesc.edu.co</p>
                     <p>Programa: Administración Turística y Hotelera</p>
                 </div>
                 <div class="footer-social">
@@ -244,24 +186,22 @@
         </div>
     </footer>
 
-    <!-- Scripts para el mapa de Datamaps -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.8/datamaps.col.js"></script>
     <script src="js/colombia_map.js"></script>
     <script src="js/main.js"></script>
     
- <script>
-        // Cargar la API de YouTube IFrame
+    <!-- Script para el video de YouTube como fondo -->
+    <script>
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        // Variable para el reproductor
+        
         var player;
-
-        // Función llamada automáticamente por la API de YouTube cuando está lista
+        
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 videoId: 'gU5AYz8x0YU',
@@ -276,8 +216,7 @@
                     cc_load_policy: 0,
                     iv_load_policy: 3,
                     autohide: 0,
-                    mute: 1,
-                    start: 1
+                    mute: 1
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -285,15 +224,13 @@
                 }
             });
         }
-
-        // Función cuando el reproductor está listo
+        
         function onPlayerReady(event) {
             event.target.playVideo();
             resizePlayer();
             window.addEventListener('resize', resizePlayer);
         }
-
-        // Ajustar tamaño del reproductor
+        
         function resizePlayer() {
             var hero = document.querySelector('.hero');
             var playerElement = document.querySelector('#youtube-player');
@@ -304,14 +241,11 @@
                 playerElement.style.top = '50%';
                 playerElement.style.left = '50%';
                 playerElement.style.transform = 'translate(-50%, -50%)';
-                playerElement.style.pointerEvents = 'none'; // No clickeable
             }
         }
-
-        // Reiniciar el video si termina (por seguridad)
+        
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
-                player.seekTo(1);
                 player.playVideo();
             }
         }

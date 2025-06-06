@@ -212,8 +212,9 @@
                             <a href="andino.html">Corredor Andino</a>
                             <a href="caribe.html">Corredor del Caribe</a>
                             <a href="sea_flower.html">Corredor Sea Flower</a>
-                            <a href="antioquia_choco.html">Corredor Antioqueño Choco</a>
+                            <a href="antioquia_choco.html">Corredor Antioquia y Choco</a>
                             <a href="corredor_selva.html">Corredor de la Selva</a>
+                            <a href="orinoquia.html">Corredor de la Orinoquía</a>
                         </div>
                     </li>
                     <li><a href="#contacto">Contacto</a></li>
@@ -221,7 +222,6 @@
             </nav>
         </div>
     </header>
-
     <main>
         <section class="corridor-hero">
             <div class="container">
@@ -390,6 +390,56 @@
                 </div>
             </div>
         </section>
+
+        <section class="video-section">
+            <div class="container">
+                <h2 class="section-title">Explora los Andes Orientales</h2>
+                <div class="video-container">
+                    <video controls class="featured-video">
+                        <source src="../archivos/vdi/andes-orientales.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento de video.
+                    </video>
+                </div>
+            </div>
+            <style>
+                .video-section {
+                    padding: 4rem 0;
+                    background-color: #f8f9fa;
+                }
+
+                .video-container {
+                    position: relative;
+                    width: 100%;
+                    max-width: 1000px;
+                    margin: 2rem auto;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                }
+
+                .featured-video {
+                    width: 100%;
+                    display: block;
+                    border-radius: 20px;
+                    transition: transform 0.3s ease;
+                }
+
+                .featured-video:hover {
+                    transform: scale(1.01);
+                }
+
+                @media (max-width: 768px) {
+                    .video-container {
+                        border-radius: 15px;
+                    }
+                    
+                    .featured-video {
+                        border-radius: 15px;
+                    }
+                }
+            </style>
+        </section>
+
         
         <section class="corridor-route">
             <div class="container">
@@ -404,7 +454,7 @@
                         </div>
                     </div>
                     
-                    <h3>Itinerario Sugerido</h3>
+                    <h3>actividades Sugerido</h3>
                     <ul class="timeline">
                         <li>
                             <div class="timeline-content">
@@ -481,7 +531,7 @@
                 </div>
                 <div class="footer-contact">
                     <h4>Contacto Académico</h4>
-                    <p>Email: proximamente</p>
+                    <p>Email: est_ai_florez@fesc.edu.co</p>
                     <p>Programa: Administración Turística y Hotelera</p>
                 </div>
                 <div class="footer-social">
